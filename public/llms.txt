@@ -1,0 +1,19 @@
+# darktalent (darktalent.tech)
+
+> Moneyball for builders: rate the legends, scout the undervalued, and surface the 1729 hiding in plain sight.
+
+darktalent turns tech and business talent into collectible player cards. It rates founders and builders, living and dead, on six stats (Vision, Execution, Influence, Innovation, Capital, Grit) that roll up into one overall number, then ranks them Forbes-list style by an Elo score that every head-to-head vote moves. You can browse the vault of legends, run head-to-head matchups, build your dream founding squad, and open a profile page for any builder.
+
+The thesis is signal over pedigree: legacy filters reward the right school and the right logo, so the market underprices the self-taught and the outsiders. darktalent scores demonstrated output and discounts the establishment markers everyone else over-weights. It is built for the network state, with GitHub and X auto-scoring on the roadmap. This is an early beta: the scoring engine and ranking model are real and tested, and the current site is seeded with a curated set of legends.
+
+## Key links
+- [Home](https://darktalent.tech/): the pitch, live rankings preview, featured legends, and the six-stat rating engine.
+- [Rankings](https://darktalent.tech/rankings): the full leaderboard, ranked by Elo with net worth, domain, and trend sparklines.
+- [Versus](https://darktalent.tech/versus): head-to-head matchups where your votes move the Elo.
+- [Cards](https://darktalent.tech/cards): the vault, every seeded legend as a card.
+- [Squad](https://darktalent.tech/squad): build your founding five and get a team rating.
+- [Profile](https://darktalent.tech/p/[id]): a single builder's card, stats, and history.
+
+## About
+- Part of adam.inc, the internet portfolio of Adam Pangelinan (Anchor Marianas LLC).
+- Builder: https://adampang.com

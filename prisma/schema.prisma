@@ -1,0 +1,324 @@
+// ──────────────────────────────────────────────────────────────────────────
+//  darktalent.tech — data model
+//
+//  Design principles:
+//   • Provenance — every signal traces back to a source + a snapshot in time.
+//   • Explainability — full score breakdowns are stored, not just a number.
+//   • Consent-first — ingestion, display, and contact are gated by ConsentRecord
+//     (GDPR lawful basis + right-to-erasure are first-class, not bolted on).
+//   • Fast ranking — the latest score is denormalized onto TalentProfile so the
+//     directory can sort/filter millions of rows without a join.
+// ──────────────────────────────────────────────────────────────────────────
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ───────────────────────────── Auth (Auth.js v5) ─────────────────────────────
+
+enum Role {
+  CANDIDATE
+  RECRUITER
+  ADMIN
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  role          Role      @default(RECRUITER)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts Account[]
+  sessions Session[]
+
+  // A platform user may *claim* a talent profile (a candidate owning their data).
+  claimedProfile   TalentProfile? @relation("ClaimedProfile", fields: [claimedProfileId], references: [id])
+  claimedProfileId String?        @unique
+
+  watchlists    Watchlist[]
+  savedSearches SavedSearch[]
+  auditLogs     AuditLog[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ──────────────────────────── Talent domain ────────────────────────────
+
+enum SourceType {
+  GITHUB
+  GITLAB
+  STACKOVERFLOW
+  LEETCODE
+  LINKEDIN
+  X
+  WEBSITE
+  ONCHAIN
+}
+
+enum ProfileStatus {
+  DISCOVERED // ingested from public data, unclaimed
+  CLAIMED    // the person verified and owns it
+  HIDDEN     // removed from the directory (right-to-be-forgotten soft state)
+}
+
+model TalentProfile {
+  id          String        @id @default(cuid())
+  handle      String        @unique // canonical slug, e.g. "torvalds"
+  displayName String?
+  headline    String?
+  bio         String?       @db.Text
+  location    String?
+  avatarUrl   String?
+  websiteUrl  String?
+  status      ProfileStatus @default(DISCOVERED)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  claimedBy User? @relation("ClaimedProfile")
+
+  connectedAccounts ConnectedAccount[]
+  signalSnapshots   SignalSnapshot[]
+  scores            Score[]
+  repositories      Repository[]
+  consents          ConsentRecord[]
+  spotlights        Spotlight[]
+  watchedBy         WatchlistEntry[]
+  tags              ProfileTag[]
+
+  // Denormalized latest score — kept in sync on every rescore for fast ranking.
+  latestOverall    Float?
+  latestConfidence Float?
+  latestScoredAt   DateTime?
+
+  @@index([latestOverall])
+  @@index([status])
+  @@index([location])
+}
+
+model ConnectedAccount {
+  id        String     @id @default(cuid())
+  profile   TalentProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId String
+  source    SourceType
+  externalId String?
+  username  String
+  url       String?
+
+  // OAuth tokens are stored ONLY for CLAIMED profiles that connected the account
+  // themselves. DISCOVERED profiles are read via public, unauthenticated APIs.
+  accessToken  String? @db.Text
+  refreshToken String? @db.Text
+  scopes       String?
+
+  lastSyncedAt DateTime?
+  createdAt    DateTime  @default(now())
+
+  @@unique([source, username])
+  @@index([profileId])
+}
+
+/// A point-in-time capture of the normalized `TalentSignals` bundle that feeds
+/// the scorer. Snapshots are immutable — re-ingestion creates a new row, giving
+/// us an audit trail and the raw material for trajectory analysis over time.
+model SignalSnapshot {
+  id         String      @id @default(cuid())
+  profile    TalentProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId  String
+  source     SourceType?
+  signals    Json        // the full TalentSignals object
+  capturedAt DateTime    @default(now())
+
+  scores Score[]
+
+  @@index([profileId, capturedAt])
+}
+
+/// A computed DarkTalentScore. We persist the FULL breakdown (pillars, factors,
+/// highlights, weights used, model version) so any score can be explained and
+/// reproduced — essential for fairness and the GDPR right to explanation.
+model Score {
+  id         String          @id @default(cuid())
+  profile    TalentProfile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId  String
+  snapshot   SignalSnapshot? @relation(fields: [snapshotId], references: [id], onDelete: SetNull)
+  snapshotId String?
+
+  overall      Float
+  confidence   Float
+  breakdown    Json // full DarkTalentScore (pillars + factors + highlights)
+  weightsUsed  Json
+  modelVersion String
+  computedAt   DateTime @default(now())
+
+  @@index([profileId, computedAt])
+  @@index([overall])
+}
+
+model Repository {
+  id          String     @id @default(cuid())
+  profile     TalentProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId   String
+  source      SourceType @default(GITHUB)
+  name        String
+  url         String
+  description String?    @db.Text
+  language    String?
+  stars       Int        @default(0)
+  forks       Int        @default(0)
+  isFork      Boolean    @default(false)
+  pushedAt    DateTime?
+
+  @@unique([profileId, source, name])
+  @@index([profileId])
+}
+
+// ──────────────────────────── Consent / privacy (GDPR) ────────────────────────────
+
+enum ConsentScope {
+  PUBLIC_INGEST   // ingest public data about me
+  PROFILE_DISPLAY // show my profile in the directory
+  CONTACT         // allow recruiters to contact me
+  ANALYTICS       // include my data in aggregate analytics
+}
+
+enum ConsentStatus {
+  GRANTED
+  REVOKED
+}
+
+model ConsentRecord {
+  id        String        @id @default(cuid())
+  profile   TalentProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId String
+  scope     ConsentScope
+  status    ConsentStatus @default(GRANTED)
+  source    String?       // how consent was captured: oauth | form | import
+  ipHash    String?       // hashed for audit — never store a raw IP
+  createdAt DateTime      @default(now())
+
+  @@index([profileId, scope])
+}
+
+// ──────────────────────────── Curation & recruiter tools ────────────────────────────
+
+model Tag {
+  id       String       @id @default(cuid())
+  name     String       @unique
+  profiles ProfileTag[]
+}
+
+model ProfileTag {
+  profile   TalentProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId String
+  tag       Tag           @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  tagId     String
+
+  @@id([profileId, tagId])
+}
+
+model Spotlight {
+  id        String        @id @default(cuid())
+  profile   TalentProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId String
+  title     String
+  blurb     String        @db.Text
+  featured  Boolean       @default(false)
+  createdAt DateTime      @default(now())
+
+  @@index([featured])
+}
+
+model Watchlist {
+  id        String           @id @default(cuid())
+  owner     User             @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId   String
+  name      String
+  createdAt DateTime         @default(now())
+  entries   WatchlistEntry[]
+
+  @@index([ownerId])
+}
+
+model WatchlistEntry {
+  watchlist   Watchlist     @relation(fields: [watchlistId], references: [id], onDelete: Cascade)
+  watchlistId String
+  profile     TalentProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId   String
+  note        String?
+  addedAt     DateTime      @default(now())
+
+  @@id([watchlistId, profileId])
+  @@index([profileId])
+}
+
+model SavedSearch {
+  id        String   @id @default(cuid())
+  owner     User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId   String
+  name      String
+  query     Json     // filters: languages, min score, custom pillar weights, …
+  createdAt DateTime @default(now())
+
+  @@index([ownerId])
+}
+
+/// Immutable access log — who viewed/exported/rescored/erased what. Privacy
+/// posture is only credible if access is auditable.
+model AuditLog {
+  id        String   @id @default(cuid())
+  actor     User?    @relation(fields: [actorId], references: [id], onDelete: SetNull)
+  actorId   String?
+  action    String   // VIEW_PROFILE | EXPORT | RESCORE | REVOKE_CONSENT | ERASE
+  targetId  String?
+  metadata  Json?
+  createdAt DateTime @default(now())
+
+  @@index([actorId, createdAt])
+}
