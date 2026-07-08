@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Bricolage_Grotesque, Hanken_Grotesk, JetBrains_Mono } from "next/font/google";
 import Link from "next/link";
+import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 
 const display = Bricolage_Grotesque({
@@ -111,7 +112,8 @@ function Footer() {
         </div>
       </div>
       <div className="wrap" style={{ paddingBottom: 28, color: "var(--ink-faint)", fontSize: 12, fontFamily: "var(--font-mono), monospace" }}>
-        © {new Date().getFullYear()} darktalent.tech · built for the network state
+        © {new Date().getFullYear()} darktalent.tech · built for the network state · built by{" "}
+        <a href="https://adampang.com" target="_blank" rel="noreferrer">Adam Pangelinan</a>
       </div>
     </footer>
   );
@@ -124,6 +126,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Nav />
         <main>{children}</main>
         <Footer />
+        <Analytics />
       </body>
     </html>
   );
