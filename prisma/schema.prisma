@@ -1,13 +1,19 @@
 // ──────────────────────────────────────────────────────────────────────────
-//  darktalent.tech — data model
+//  darktalent.tech, the data model
 //
 //  Design principles:
-//   • Provenance — every signal traces back to a source + a snapshot in time.
-//   • Explainability — full score breakdowns are stored, not just a number.
-//   • Consent-first — ingestion, display, and contact are gated by ConsentRecord
-//     (GDPR lawful basis + right-to-erasure are first-class, not bolted on).
-//   • Fast ranking — the latest score is denormalized onto TalentProfile so the
-//     directory can sort/filter millions of rows without a join.
+//   • Provenance: every signal traces back to a source plus a snapshot in time.
+//   • Explainability: full score breakdowns are stored, not just a number.
+//   • Consent-first: ingestion, display, and contact are gated by ConsentRecord
+//     (GDPR lawful basis and right-to-erasure are first-class, not bolted on).
+//   • Fast ranking: the latest score is denormalized onto TalentProfile so the
+//     directory can sort and filter millions of rows without a join.
+//
+//  THE CARD. TalentProfile is the shared object of the talent trifecta named in
+//  ECOSYSTEM.md. Its scores come from darktalent (Score, SignalSnapshot), its
+//  artifacts come from company.university (Artifact), and it is transacted by
+//  skill.supply (Placement). Those last two models are what let proof compound:
+//  without them a candidate is a snapshot, with them a candidate has a history.
 // ──────────────────────────────────────────────────────────────────────────
 
 generator client {
@@ -123,6 +129,9 @@ model TalentProfile {
 
   claimedBy User? @relation("ClaimedProfile")
 
+  /// Which surface of the trifecta created this card: skill.supply | darktalent | company.university
+  origin String?
+
   connectedAccounts ConnectedAccount[]
   signalSnapshots   SignalSnapshot[]
   scores            Score[]
@@ -131,8 +140,10 @@ model TalentProfile {
   spotlights        Spotlight[]
   watchedBy         WatchlistEntry[]
   tags              ProfileTag[]
+  artifacts         Artifact[]
+  placements        Placement[]
 
-  // Denormalized latest score — kept in sync on every rescore for fast ranking.
+  // Denormalized latest score, kept in sync on every rescore for fast ranking.
   latestOverall    Float?
   latestConfidence Float?
   latestScoredAt   DateTime?
@@ -140,6 +151,7 @@ model TalentProfile {
   @@index([latestOverall])
   @@index([status])
   @@index([location])
+  @@index([origin])
 }
 
 model ConnectedAccount {
@@ -165,7 +177,7 @@ model ConnectedAccount {
 }
 
 /// A point-in-time capture of the normalized `TalentSignals` bundle that feeds
-/// the scorer. Snapshots are immutable — re-ingestion creates a new row, giving
+/// the scorer. Snapshots are immutable: re-ingestion creates a new row, giving
 /// us an audit trail and the raw material for trajectory analysis over time.
 model SignalSnapshot {
   id         String      @id @default(cuid())
@@ -182,7 +194,7 @@ model SignalSnapshot {
 
 /// A computed DarkTalentScore. We persist the FULL breakdown (pillars, factors,
 /// highlights, weights used, model version) so any score can be explained and
-/// reproduced — essential for fairness and the GDPR right to explanation.
+/// reproduced, which is essential for fairness and the GDPR right to explanation.
 model Score {
   id         String          @id @default(cuid())
   profile    TalentProfile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
@@ -240,13 +252,89 @@ model ConsentRecord {
   scope     ConsentScope
   status    ConsentStatus @default(GRANTED)
   source    String?       // how consent was captured: oauth | form | import
-  ipHash    String?       // hashed for audit — never store a raw IP
+  ipHash    String?       // hashed for audit, never store a raw IP
   createdAt DateTime      @default(now())
 
   @@index([profileId, scope])
 }
 
-// ──────────────────────────── Curation & recruiter tools ────────────────────────────
+// ──────────────────────────── The write-back: artifacts and outcomes ────────────────────────────
+
+enum ArtifactKind {
+  PROJECT   // a shipped thing, the strongest evidence
+  REPO      // an original repository
+  WRITEUP   // a case study, talk, or piece of writing
+  REVIEW    // sustained review or mentorship of others' work
+  CREDENTIAL // a completed track, only meaningful when it emits one of the above
+}
+
+/// Proof emitted by the academy (company.university) and written back onto the
+/// card. This is the step ECOSYSTEM.md calls the flywheel: every attempt
+/// manufactures new proof, so a candidate who is not placed this month is
+/// measurably more placeable next month. Auto-appliers make noise, this makes
+/// signal that compounds to the player.
+model Artifact {
+  id        String        @id @default(cuid())
+  profile   TalentProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId String
+  kind      ArtifactKind
+  title     String
+  url       String?
+  /// Who vouches for it. company.university for academy work, else self-reported.
+  issuer    String?
+  /// Only true when the issuer verified it. Unverified artifacts never lift a score.
+  verified  Boolean       @default(false)
+  /// Which card stat this artifact was meant to move: vis|exe|inf|ino|cap|grt
+  closesStat String?
+  evidence  Json?
+  createdAt DateTime      @default(now())
+
+  @@index([profileId, createdAt])
+  @@index([verified])
+}
+
+enum PlacementOutcome {
+  INTRODUCED
+  INTERVIEWING
+  HIRED
+  DECLINED
+  LEFT_EARLY // did not survive the guarantee period
+  STUCK      // still there past the guarantee period
+}
+
+/// The labeled outcome. This is the only thing that can ever validate a score,
+/// and it is the asset no competitor has: recruiters hold outcomes without a
+/// signal engine, code hosts hold signals without outcomes. Here both sit on
+/// the same row.
+model Placement {
+  id        String           @id @default(cuid())
+  profile   TalentProfile    @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId String
+
+  company   String
+  roleTitle String
+  /// The squad slot this seat occupied: VISION|BUILD|INFLUENCE|CAPITAL|GRIT
+  slot      String?
+  outcome   PlacementOutcome @default(INTRODUCED)
+
+  /// What the engine believed at the moment of introduction. Frozen on purpose:
+  /// comparing this against the outcome is how the model gets calibrated.
+  predictedFit     Float?
+  predictedOverall Float?
+  modelVersion     String?
+
+  feeAmount   Int?      // in whole currency units, never a float for money
+  feeCurrency String?   @default("USD")
+  introducedAt DateTime @default(now())
+  startedAt    DateTime?
+  endedAt      DateTime?
+  notes        String?  @db.Text
+
+  @@index([profileId, introducedAt])
+  @@index([outcome])
+}
+
+// ──────────────────────────── Curation and recruiter tools ────────────────────────────
 
 model Tag {
   id       String       @id @default(cuid())
@@ -309,7 +397,7 @@ model SavedSearch {
   @@index([ownerId])
 }
 
-/// Immutable access log — who viewed/exported/rescored/erased what. Privacy
+/// Immutable access log: who viewed/exported/rescored/erased what. Privacy
 /// posture is only credible if access is auditable.
 model AuditLog {
   id        String   @id @default(cuid())

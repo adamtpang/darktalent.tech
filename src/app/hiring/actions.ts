@@ -2,6 +2,7 @@
 
 import { parseJD } from "@/lib/shortlist/jd";
 import { buildShortlist } from "@/lib/shortlist/build";
+import { loadPool } from "@/lib/shortlist/pool";
 import type { Shortlist } from "@/lib/shortlist/types";
 
 export type ShortlistResponse =
@@ -22,7 +23,8 @@ export async function runShortlist(jd: string): Promise<ShortlistResponse> {
   }
   try {
     const role = parseJD(text);
-    return { ok: true, shortlist: buildShortlist(role) };
+    const pool = await loadPool();
+    return { ok: true, shortlist: buildShortlist(role, pool) };
   } catch {
     return { ok: false, error: "Could not build a shortlist from that text. Try pasting the full job description." };
   }

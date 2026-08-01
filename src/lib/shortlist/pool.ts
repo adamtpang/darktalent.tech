@@ -5,18 +5,14 @@ import { EXAMPLES } from "@/lib/audit/examples";
 /**
  * The candidate pool adapter.
  *
- * STATE OF THE WORLD, 2026-08-01, verified in the skill.supply repo:
- * skill.supply does NOT persist candidates. `lib/share.ts` there says it plainly:
- * "Encode a report into a URL-hash payload. No backend involved." Reports live
- * entirely in the URL fragment, client side. There is no table of seekers, so
- * there is nothing for darktalent to query yet.
+ * Reads real consented cards when a database is configured, and falls back to
+ * clearly labeled fictional composites when it is not. Every shortlist reports
+ * which of the two it used, so an artifact never implies real people who are
+ * not there.
  *
- * Therefore this pool is seeded locally with clearly labeled fictional
- * composites, and every artifact built from it says so. We do not claim a
- * skill.supply pool until skill.supply actually persists one.
- *
- * When it does, add a `skillSupplyPool()` adapter that returns the same
- * PoolCandidate shape and switch POOL_SOURCE. Nothing downstream changes.
+ * The real path is fed by `POST /api/card`, the consented opt-in that
+ * skill.supply calls at the end of a free report. Until people actually opt in,
+ * the fallback keeps /hiring demonstrable without claiming a pool we lack.
  */
 
 export interface PoolCandidate {
@@ -29,7 +25,14 @@ export interface PoolCandidate {
 }
 
 export const POOL_SOURCE =
-  "Local seed pool of fictional composites. skill.supply has no persisted pool yet (share.ts is URL-hash only), so no real seeker records are claimed here.";
+  "Local seed pool of fictional composites. No real seeker records are claimed here.";
+
+export interface LoadedPool {
+  candidates: PoolCandidate[];
+  source: string;
+  /** True when these are real consented people rather than demo composites. */
+  live: boolean;
+}
 
 /** Infra builder: huge output, floor pedigree. The archetypal dark talent. */
 const seed: PoolCandidate[] = [
@@ -219,6 +222,40 @@ const seed: PoolCandidate[] = [
   },
 ];
 
+/** The demo pool. Always available, never claimed to be real people. */
 export function getPool(): PoolCandidate[] {
   return seed;
+}
+
+/**
+ * The pool a shortlist should actually be built from.
+ *
+ * Prefers real consented cards. Falls back to composites when no database is
+ * configured or when nobody has opted in yet, and says which happened. The
+ * import is dynamic so that pure-compute paths and static builds never pull in
+ * the Prisma client.
+ */
+export async function loadPool(): Promise<LoadedPool> {
+  try {
+    const { loadPoolFromDb, isDbConfigured } = await import("@/lib/card/service");
+    if (isDbConfigured()) {
+      const live = await loadPoolFromDb();
+      if (live.length > 0) {
+        return {
+          candidates: live,
+          live: true,
+          source: `${live.length} consented cards from the darktalent pool. Every person here opted in and can revoke at any time.`,
+        };
+      }
+      return {
+        candidates: seed,
+        live: false,
+        source:
+          "Database is configured but no one has opted in yet, so this run used the labeled demo pool.",
+      };
+    }
+  } catch {
+    // fall through to the demo pool
+  }
+  return { candidates: seed, live: false, source: POOL_SOURCE };
 }

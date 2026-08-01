@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { parseJD } from "@/lib/shortlist/jd";
 import { buildShortlist } from "@/lib/shortlist/build";
+import { loadPool } from "@/lib/shortlist/pool";
 import { HiringClient } from "@/components/hiring/HiringClient";
 
 export const metadata: Metadata = {
@@ -16,8 +17,8 @@ Own our distributed systems platform. Ship production Rust and Go services,
 run the Kubernetes migration, and set technical direction for how we scale
 the API. Tests, CI, and documentation matter here.`;
 
-export default function HiringPage() {
-  const initial = buildShortlist(parseJD(SEED_JD));
+export default async function HiringPage() {
+  const initial = buildShortlist(parseJD(SEED_JD), await loadPool());
 
   return (
     <section className="section" style={{ paddingTop: 48 }}>

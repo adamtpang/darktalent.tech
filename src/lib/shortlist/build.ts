@@ -2,7 +2,7 @@ import { STAT_KEYS } from "@/lib/cards/types";
 import type { CardStats } from "@/lib/cards/types";
 import { buildAudit } from "@/lib/audit/build";
 import type { RoleSpec, Shortlist, ShortlistEntry } from "./types";
-import { getPool, POOL_SOURCE, type PoolCandidate } from "./pool";
+import { getPool, POOL_SOURCE, type PoolCandidate, type LoadedPool } from "./pool";
 
 /**
  * Build the sellable artifact: five scored candidates matched to one JD.
@@ -41,10 +41,11 @@ export function fitFor(stats: CardStats, role: RoleSpec): number {
 
 export function buildShortlist(
   role: RoleSpec,
-  candidates: PoolCandidate[] = getPool(),
+  pool: LoadedPool = { candidates: getPool(), source: POOL_SOURCE, live: false },
   size = 5,
   now: Date = new Date(),
 ): Shortlist {
+  const candidates = pool.candidates;
   const scored: ShortlistEntry[] = candidates.map((c) => {
     const audit = buildAudit(c.signals, {
       displayName: c.displayName,
@@ -80,9 +81,9 @@ export function buildShortlist(
   return {
     role,
     entries,
-    poolSource: POOL_SOURCE,
+    poolSource: pool.source,
     poolSize: candidates.length,
-    caveats: buildCaveats(role, candidates, size),
+    caveats: buildCaveats(role, candidates, size, pool.live),
     computedAt: now.toISOString(),
   };
 }
@@ -98,16 +99,25 @@ function whyLine(stats: CardStats, role: RoleSpec, archetype: string): string {
   return `${archetype}. ${key} ${have} against ${need} required, a gap of ${gap}. Placeable after a short, named close rather than today.`;
 }
 
-function buildCaveats(role: RoleSpec, candidates: PoolCandidate[], size: number): string[] {
+function buildCaveats(
+  role: RoleSpec,
+  candidates: PoolCandidate[],
+  size: number,
+  live: boolean,
+): string[] {
   const out: string[] = [];
 
   out.push(
     "Scores are computed from public code signals only. They are blind to design, product sense, communication, closed source work, and every non-code role.",
   );
 
-  if (candidates.every((c) => c.isComposite)) {
+  if (!live || candidates.every((c) => c.isComposite)) {
     out.push(
       "Every candidate in this run is a labeled fictional composite. This artifact demonstrates the pipeline, it does not represent real people available to hire.",
+    );
+  } else {
+    out.push(
+      "Every candidate here opted in, consented to be shown, and can revoke at any time.",
     );
   }
 

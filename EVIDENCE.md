@@ -53,6 +53,33 @@ darktalent one, and it is the single highest-value unblock for this pairing.
 | 2026-08-01 | Em dashes removed from src | 100+ across 36 files | 0 in `src/`, 6 glyph regressions caught and repaired | `grep -rc` for the character across src/ returns nothing |
 | 2026-08-01 | Build and tests | n/a | clean build, 122 pages, 17/17 unit tests pass | `npm run build`, `npm test` |
 
+## 2026-08-01, later: Phase 1 of TRIFECTA.md, the card is wired
+
+The critical fault F1 (no repo persists a person) is now fixed in code, and
+gated on one environment variable rather than on more building.
+
+| Change | Before | After | Evidence |
+| --- | --- | --- | --- |
+| The card exists | `src/lib/db.ts` existed and zero app files imported it | `POST /api/card` creates a consented TalentProfile with an immutable SignalSnapshot, a full Score, and ConsentRecord rows | build lists `/api/card` as a dynamic route |
+| Consent is enforced in code | n/a | opt-in without `consent.display: true` is rejected 400 | `curl` returned `consent.display: Invalid literal value, expected true` |
+| Revocation exists | n/a | `DELETE /api/card?handle=` revokes every granted consent and sets the profile HIDDEN | route implemented, untested against a live DB |
+| The pool can read real people | hardcoded composites only | `loadPool()` prefers consented cards, falls back to composites, and reports which it used | `/hiring` reported "Local seed pool of fictional composites" and did NOT claim consent |
+| Proof can compound | no artifact or outcome model | `Artifact` (academy write-back) and `Placement` (labeled outcome, freezes predictedFit and modelVersion) added to the schema | `prisma generate` succeeded, `tsc --noEmit` clean |
+| Nothing broke without a DB | n/a | `/`, `/scout`, `/hiring` all 200, 17/17 tests pass, no server errors | dev server logs clean |
+
+**Still zero.** No person has opted in, because opt-ins are rejected until a
+database is configured. `GET /api/card` currently returns
+`{"accepting": false}` and says why. That is the honest state.
+
+**What turns it on:** set `DATABASE_URL` and `DIRECT_URL` (Neon) locally and on
+Vercel, then `npx prisma migrate dev --name card-artifacts-placements`. Local
+`prisma validate` currently fails only on the missing `DIRECT_URL` env var, not
+on the schema, which generated cleanly. See `CARD_API.md`.
+
+**Next, and it is not in this repo:** skill.supply adds one "add me to the pool"
+button that POSTs to this endpoint. Phase 2 of `Aether/TRIFECTA.md`. The
+integration snippet is written out in `CARD_API.md` so it is a copy-paste job.
+
 ## Offer receipt
 
 | Field | Value |
