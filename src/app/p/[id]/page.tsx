@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   if (!b) return { title: "Not found" };
   return {
     title: `${b.name} · #${b.rank}`,
-    description: `${b.name} — Elo ${b.elo}, world #${b.rank}. ${b.blurb}`,
+    description: `${b.name}, Elo ${b.elo}, world #${b.rank}. ${b.blurb}`,
   };
 }
 
@@ -99,7 +99,7 @@ export default async function BuilderPage({ params }: { params: Promise<{ id: st
                 <span>PEAK <b>{b.peakElo}</b></span>
                 <span>WORLD <b>#{b.rank}</b></span>
                 <span>{b.domain.toUpperCase()} <b>#{dRank.rank}</b></span>
-                <span>7D {b.move > 0 ? <b className="lb-up">▲{b.move}</b> : b.move < 0 ? <b className="lb-down">▼{-b.move}</b> : <b className="lb-flat">—</b>} <b className={eloDelta7 >= 0 ? "lb-up" : "lb-down"}>{eloDelta7 >= 0 ? "+" : ""}{eloDelta7}</b></span>
+                <span>7D {b.move > 0 ? <b className="lb-up">▲{b.move}</b> : b.move < 0 ? <b className="lb-down">▼{-b.move}</b> : <b className="lb-flat">-</b>} <b className={eloDelta7 >= 0 ? "lb-up" : "lb-down"}>{eloDelta7 >= 0 ? "+" : ""}{eloDelta7}</b></span>
               </div>
             </div>
 
@@ -161,7 +161,7 @@ export default async function BuilderPage({ params }: { params: Promise<{ id: st
               <Link key={x.id} href={`/p/${x.id}`} className="lb-row" data-self={x.id === b.id}>
                 <span className="lb-c-rank"><span className="lb-rank" data-top={x.rank <= 3}><i>#</i>{x.rank}</span></span>
                 <span className="lb-c-move">
-                  {x.move > 0 ? <span className="lb-up">▲{x.move}</span> : x.move < 0 ? <span className="lb-down">▼{-x.move}</span> : <span className="lb-flat">—</span>}
+                  {x.move > 0 ? <span className="lb-up">▲{x.move}</span> : x.move < 0 ? <span className="lb-down">▼{-x.move}</span> : <span className="lb-flat">-</span>}
                 </span>
                 <span className="lb-c-builder">
                   <span className="lb-name"><b>{x.surname}</b><em>{x.role} · {x.industry}</em></span>

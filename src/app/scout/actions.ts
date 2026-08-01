@@ -11,14 +11,14 @@ export type AuditResponse =
 
 /**
  * Run an audit for a GitHub handle (or a demo example key). Server-only: the
- * live path hits GitHub via Octokit. Everything degrades gracefully — a bad
+ * live path hits GitHub via Octokit. Everything degrades gracefully, a bad
  * handle or a rate-limit returns a friendly error, never a crash.
  */
 export async function runAudit(rawHandle: string): Promise<AuditResponse> {
   const handle = rawHandle.trim().replace(/^@/, "").replace(/\s+/g, "");
   if (!handle) return { ok: false, error: "Enter a GitHub handle to audit." };
 
-  // Demo composites — instant, no network, clearly labelled in the UI.
+  // Demo composites, instant, no network, clearly labelled in the UI.
   const example = getExample(handle);
   if (example) {
     return {

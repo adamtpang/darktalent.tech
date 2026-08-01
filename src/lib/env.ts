@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 /**
- * Runtime environment validation. Import this anywhere you need env vars — it
+ * Runtime environment validation. Import this anywhere you need env vars, it
  * fails fast with a readable error instead of surfacing `undefined` deep in a
  * request. Ingestion-only fields are optional so scripts can run with less.
  */
@@ -28,7 +28,7 @@ if (!parsed.success) {
     "❌ Invalid environment variables:",
     parsed.error.flatten().fieldErrors,
   );
-  throw new Error("Invalid environment variables — see .env.example");
+  throw new Error("Invalid environment variables, see .env.example");
 }
 
 export const env = parsed.data;

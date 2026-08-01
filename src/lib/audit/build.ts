@@ -26,7 +26,7 @@ const SLOT_IDS = Object.keys(SLOT_STAT) as SlotId[];
 const ARCHETYPE: Record<SlotId, { name: (s: CardStats) => string; def: string }> = {
   BUILD: {
     name: (s) => (s.exe >= 85 ? "Deep-Lying Systems Builder" : "Zero-to-One Builder"),
-    def: "Ships production-grade systems — trusted for what they make, not where they worked.",
+    def: "Ships production-grade systems, trusted for what they make, not where they worked.",
   },
   VISION: {
     name: () => "North-Star Strategist",
@@ -34,7 +34,7 @@ const ARCHETYPE: Record<SlotId, { name: (s: CardStats) => string; def: string }>
   },
   INFLUENCE: {
     name: () => "Force Multiplier",
-    def: "Makes everyone around them faster — the work is depended on, not just seen.",
+    def: "Makes everyone around them faster, the work is depended on, not just seen.",
   },
   CAPITAL: {
     name: () => "Compounding Operator",
@@ -47,7 +47,7 @@ const ARCHETYPE: Record<SlotId, { name: (s: CardStats) => string; def: string }>
 };
 
 const STAT_PHRASE: Record<keyof CardStats, string> = {
-  ino: "Builds what didn't exist — high original output",
+  ino: "Builds what didn't exist, high original output",
   exe: "Ships relentlessly, and on time",
   inf: "Work is forked and depended on, not just followed",
   vis: "Sees where the field is going early",
@@ -56,11 +56,11 @@ const STAT_PHRASE: Record<keyof CardStats, string> = {
 };
 
 const PLACEMENT: Record<SlotId, { label: string; href?: string }> = {
-  BUILD: { label: "A BUILD-slot fit — e.g. Intel's diagnosed BUILD gap", href: "/duel" },
-  VISION: { label: "A VISION-slot fit — founder / strategy seats" },
-  INFLUENCE: { label: "An INFLUENCE-slot fit — GTM, DevRel, brand" },
-  CAPITAL: { label: "A CAPITAL-slot fit — finance / capital allocation" },
-  GRIT: { label: "A GRIT-slot fit — ops / execution / reliability" },
+  BUILD: { label: "A BUILD-slot fit, e.g. Intel's diagnosed BUILD gap", href: "/duel" },
+  VISION: { label: "A VISION-slot fit, founder / strategy seats" },
+  INFLUENCE: { label: "An INFLUENCE-slot fit, GTM, DevRel, brand" },
+  CAPITAL: { label: "A CAPITAL-slot fit, finance / capital allocation" },
+  GRIT: { label: "A GRIT-slot fit, ops / execution / reliability" },
 };
 
 const UPSKILL: Record<keyof CardStats, { slot: SlotId; title: string; action: string }> = {
@@ -72,7 +72,7 @@ const UPSKILL: Record<keyof CardStats, { slot: SlotId; title: string; action: st
   vis: {
     slot: "VISION",
     title: "Thin field-of-view",
-    action: "Review 3–4 external PRs a week in your ecosystem — it builds the strategic surface raw output lacks.",
+    action: "Review 3–4 external PRs a week in your ecosystem, it builds the strategic surface raw output lacks.",
   },
   cap: {
     slot: "CAPITAL",
@@ -82,7 +82,7 @@ const UPSKILL: Record<keyof CardStats, { slot: SlotId; title: string; action: st
   ino: {
     slot: "BUILD",
     title: "More adapting than originating",
-    action: "Author one original repo that solves a problem you personally hit — depth over forks.",
+    action: "Author one original repo that solves a problem you personally hit, depth over forks.",
   },
   exe: {
     slot: "BUILD",
@@ -97,11 +97,11 @@ const UPSKILL: Record<keyof CardStats, { slot: SlotId; title: string; action: st
 };
 
 const SCOPE_NOTE =
-  "Audited from public GitHub only — blind to design, product, communication, closed-source work, and non-code roles.";
+  "Audited from public GitHub only, blind to design, product, communication, closed-source work, and non-code roles.";
 
 /**
  * Pure: normalized signals → a full AuditResult. Runs the REAL scoring engine
- * (scoreTalent) — this is the honest half the org side can never be, because a
+ * (scoreTalent), this is the honest half the org side can never be, because a
  * consented builder's GitHub is real data, not a stage set.
  */
 export function buildAudit(
@@ -163,7 +163,7 @@ export function buildAudit(
     developmentAreas,
     scopeNote: SCOPE_NOTE,
     dataCaveat: noActivity
-      ? "No GitHub token configured, so commit / PR / review counts came back approximate — volume and trajectory are under-counted here."
+      ? "No GitHub token configured, so commit / PR / review counts came back approximate, volume and trajectory are under-counted here."
       : undefined,
   };
 }
@@ -179,12 +179,12 @@ function readTrajectory(s: TalentSignals): { dir: TrajectoryDir; label: string }
   const last = s.output.commitsLast12mo;
   const prev = s.output.commitsPrev12mo;
   if (last === 0 && prev === 0) {
-    return { dir: "steady", label: "Steady — recent activity data unavailable" };
+    return { dir: "steady", label: "Steady, recent activity data unavailable" };
   }
   const ratio = last / Math.max(1, prev);
-  if (ratio >= 1.2) return { dir: "rising", label: "Rising — output accelerating year over year" };
-  if (ratio < 0.8) return { dir: "cooling", label: "Cooling — output easing off recently" };
-  return { dir: "steady", label: "Steady — consistent output year over year" };
+  if (ratio >= 1.2) return { dir: "rising", label: "Rising, output accelerating year over year" };
+  if (ratio < 0.8) return { dir: "cooling", label: "Cooling, output easing off recently" };
+  return { dir: "steady", label: "Steady, consistent output year over year" };
 }
 
 function buildStrengths(
@@ -213,7 +213,7 @@ function buildStrengths(
   return out.slice(0, 3);
 }
 
-/** Split a leading emoji off a highlight line ("💎 1729 signal — …"). */
+/** Split a leading emoji off a highlight line ("💎 1729 signal, …"). */
 function splitEmoji(line: string): AuditStrength | null {
   const trimmed = line.trim();
   if (!trimmed) return null;
@@ -230,7 +230,7 @@ function topFactor(
 ): string {
   if (!factors.length) return "";
   const top = factors.reduce((a, b) => (b.points > a.points ? b : a));
-  return top.detail ? `${top.label} — ${top.detail}` : top.label;
+  return top.detail ? `${top.label}, ${top.detail}` : top.label;
 }
 
 function lowestStats(stats: CardStats, n: number): (keyof CardStats)[] {

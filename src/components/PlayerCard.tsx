@@ -2,7 +2,7 @@ import type { Legend } from "@/lib/cards/types";
 import { STAT_KEYS, STAT_LABELS } from "@/lib/cards/types";
 import { overall, tier, initials, ROLE_ABBR } from "@/lib/cards/rating";
 
-/** Presentational FUT-style card. Pure render — wrap in <TiltCard> for motion. */
+/** Presentational FUT-style card. Pure render, wrap in <TiltCard> for motion. */
 export function PlayerCard({ legend }: { legend: Legend }) {
   const ovr = overall(legend.stats);
   const t = tier(legend);

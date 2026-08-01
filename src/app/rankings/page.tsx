@@ -6,7 +6,7 @@ import { Leaderboard } from "@/components/rankings/Leaderboard";
 export const metadata: Metadata = {
   title: "Rankings",
   description:
-    "The Forbes list, ranked by Elo. Live head-to-head ratings for the world's top living builders — net worth is the market cap, Elo is the game.",
+    "The Forbes list, ranked by Elo. Live head-to-head ratings for the world's top living builders, net worth is the market cap, Elo is the game.",
 };
 
 export default function RankingsPage() {
@@ -21,7 +21,7 @@ export default function RankingsPage() {
         </h1>
         <p className="lead" style={{ marginTop: 14, maxWidth: 640 }}>
           Every builder gets a rating. Net worth is the market cap; Elo is the
-          game — and it moves every time someone votes.{" "}
+          game, and it moves every time someone votes.{" "}
           <Link href="/versus" style={{ color: "var(--signal)" }}>
             Cast a vote →
           </Link>

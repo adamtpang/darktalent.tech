@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Bricolage_Grotesque, Hanken_Grotesk, JetBrains_Mono } from "next/font/google";
 import Link from "next/link";
 import { Analytics } from "@vercel/analytics/react";
+import { FLEET_HUB, FLEET_SISTERS } from "@/lib/fleet";
 import "./globals.css";
 
 const display = Bricolage_Grotesque({
@@ -25,11 +26,11 @@ const SITE = "https://darktalent.tech";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE),
   title: {
-    default: "darktalent — Moneyball for tech & business",
+    default: "darktalent: Moneyball for tech & business",
     template: "%s · darktalent",
   },
   description:
-    "Everyone gets a card. Scout undervalued talent, rate the legends — living and dead — and build your dream squad. Signal over pedigree.",
+    "Everyone gets a card. Scout undervalued talent, rate the legends, living and dead, and build your dream squad. Signal over pedigree.",
   keywords: [
     "talent",
     "moneyball",
@@ -40,7 +41,7 @@ export const metadata: Metadata = {
     "squad builder",
   ],
   openGraph: {
-    title: "darktalent — Moneyball for tech & business",
+    title: "darktalent: Moneyball for tech & business",
     description:
       "Everyone gets a card. Scout the undervalued, rate the legends, build your squad.",
     url: SITE,
@@ -49,7 +50,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "darktalent — Moneyball for tech & business",
+    title: "darktalent: Moneyball for tech & business",
     description: "Everyone gets a card. Build your squad of legends.",
   },
 };
@@ -79,10 +80,9 @@ function Nav() {
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <Link href="/scout" className="chip">Scout</Link>
           <Link href="/duel" className="chip nav-hide-sm">Duel</Link>
-          <Link href="/versus" className="chip nav-hide-sm">Versus</Link>
-          <Link href="/squad" className="chip nav-hide-sm">Squad</Link>
-          <Link href="/rankings" className="btn btn-gold" style={{ padding: "9px 16px" }}>
-            Rankings
+          <Link href="/rankings" className="chip nav-hide-sm">Rankings</Link>
+          <Link href="/hiring" className="btn btn-gold" style={{ padding: "9px 16px" }}>
+            Hire
           </Link>
         </div>
       </nav>
@@ -106,9 +106,23 @@ function Footer() {
           </p>
         </div>
         <div style={{ display: "flex", gap: 28, fontSize: 13, color: "var(--ink-dim)" }}>
+          <Link href="/hiring">Hire</Link>
+          <Link href="/scout">Scout</Link>
           <Link href="/cards">Legends</Link>
-          <Link href="/squad">Squad</Link>
           <a href="https://ns.com" target="_blank" rel="noreferrer">Network School ↗</a>
+        </div>
+      </div>
+      <div className="wrap" style={{ paddingBottom: 20 }}>
+        <div className="fleet-ring">
+          <span>Part of the adam.inc fleet</span>
+          <span className="sep">·</span>
+          <a href={FLEET_HUB.url} target="_blank" rel="noreferrer">{FLEET_HUB.name}</a>
+          {FLEET_SISTERS.map((s) => (
+            <span key={s.url} style={{ display: "inline-flex", gap: 14, alignItems: "center" }}>
+              <span className="sep">·</span>
+              <a href={s.url} target="_blank" rel="noreferrer" title={s.one}>{s.name}</a>
+            </span>
+          ))}
         </div>
       </div>
       <div className="wrap" style={{ paddingBottom: 28, color: "var(--ink-faint)", fontSize: 12, fontFamily: "var(--font-mono), monospace" }}>

@@ -32,7 +32,7 @@ export interface ScoreOptions {
  * Each pillar is computed independently and returns its own sub-score,
  * confidence, and human-readable factors. Pillars with zero confidence (e.g. no
  * consented alignment data) are dropped and their weight is redistributed
- * across the rest — so a missing optional signal never silently caps a score.
+ * across the rest, so a missing optional signal never silently caps a score.
  */
 export function scoreTalent(
   signals: TalentSignals,
@@ -76,7 +76,7 @@ export function scoreTalent(
 
 // ───────────────────────────── Pillars ─────────────────────────────
 
-/** Technical ability — depth, breadth, impact, and engineering discipline. */
+/** Technical ability, depth, breadth, impact, and engineering discipline. */
 function technicalPillar(s: TalentSignals): PillarScore {
   const { output: o, craft: c } = s;
 
@@ -123,7 +123,7 @@ function technicalPillar(s: TalentSignals): PillarScore {
   return pillar("technical", score, confidence, factors);
 }
 
-/** Growth trajectory — is output accelerating, and is it sustained? */
+/** Growth trajectory, is output accelerating, and is it sustained? */
 function trajectoryPillar(s: TalentSignals): PillarScore {
   const o = s.output;
 
@@ -164,14 +164,14 @@ function trajectoryPillar(s: TalentSignals): PillarScore {
 }
 
 /**
- * The Dark-Talent signal — the heart of the model.
+ * The Dark-Talent signal, the heart of the model.
  *
  *   outputIndex   = how much this person demonstrably ships / impacts (0..100)
  *   pedigreeIndex = how much "establishment credential" they carry  (0..100)
  *
  * The signal rewards a large POSITIVE gap (high output, low pedigree): the
  * person the legacy filters miss. Someone elite-and-productive still scores
- * well on `technical`; the *arbitrage* — the undervaluation — lives here.
+ * well on `technical`; the *arbitrage*, the undervaluation, lives here.
  * Ramanujan had no credentials and the notebook of a century. This pillar
  * exists to surface that shape: the 1729 hiding in plain sight.
  */
@@ -204,13 +204,13 @@ function darkSignalPillar(s: TalentSignals): PillarScore {
   return pillar("darkSignal", score, confidence, factors);
 }
 
-/** Merit influence — is the person's work depended on, not just followed? */
+/** Merit influence, is the person's work depended on, not just followed? */
 function influencePillar(s: TalentSignals): PillarScore {
   const { output: o, account: a } = s;
 
   const dependents = logScale(o.totalForks, 400);
   const helping = logScale(o.reviewsGiven + o.issuesResolved, 200);
-  const reach = logScale(a.followers, 2000); // vanity metric — least weight
+  const reach = logScale(a.followers, 2000); // vanity metric, least weight
 
   const score = weightedAvg([
     { value: dependents, weight: 0.45 },
@@ -232,7 +232,7 @@ function influencePillar(s: TalentSignals): PillarScore {
   return pillar("influence", score, confidence, factors);
 }
 
-/** Network-State alignment — optional, consent-based. Absent ⇒ confidence 0. */
+/** Network-State alignment, optional, consent-based. Absent ⇒ confidence 0. */
 function alignmentPillar(s: TalentSignals): PillarScore {
   const a = s.alignment;
   if (!a) {
@@ -309,11 +309,11 @@ function buildHighlights(s: TalentSignals, pillars: PillarScore[]): string[] {
 
   if (darkSignal.score >= 70 && computePedigreeIndex(s) < 30) {
     out.push(
-      "💎 1729 signal — elite output from a non-elite background; exactly the talent legacy filters miss.",
+      "💎 1729 signal, elite output from a non-elite background; exactly the talent legacy filters miss.",
     );
   }
   if ((trajectory.factors[0]?.points ?? 0) >= 70) {
-    out.push("📈 Steep trajectory — output is accelerating year over year.");
+    out.push("📈 Steep trajectory, output is accelerating year over year.");
   }
   const discipline =
     s.output.originalRepos > 0
@@ -323,13 +323,13 @@ function buildHighlights(s: TalentSignals, pillars: PillarScore[]): string[] {
         )
       : 0;
   if (discipline >= 70) {
-    out.push("🧪 Disciplined craft — tests, CI, and docs across most repos.");
+    out.push("🧪 Disciplined craft, tests, CI, and docs across most repos.");
   }
   if ((influence.factors[0]?.points ?? 0) >= 70) {
-    out.push("🌱 Real influence — their code is forked and depended upon, not just starred.");
+    out.push("🌱 Real influence, their code is forked and depended upon, not just starred.");
   }
   if (s.pedigree.selfReportedNonTraditional) {
-    out.push("🛤️ Non-traditional path — self-taught / bootcamp / career-changer.");
+    out.push("🛤️ Non-traditional path, self-taught / bootcamp / career-changer.");
   }
   return out;
 }

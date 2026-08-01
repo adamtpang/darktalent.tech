@@ -4,7 +4,7 @@ import { EXAMPLES } from "@/lib/audit/examples";
 import { ScoutClient } from "@/components/scout/ScoutClient";
 
 export const metadata: Metadata = {
-  title: "Scout — audit your GitHub",
+  title: "Scout: audit your GitHub",
   description:
     "A professional audit of any public GitHub. Ships an archetype card you can post; keeps the score private. The Athletic × Visual Capitalist treatment for builders.",
 };
@@ -28,8 +28,7 @@ export default function ScoutPage() {
         </h1>
         <p className="lead" style={{ marginTop: 14, maxWidth: 620 }}>
           Enter a public GitHub handle and the engine reads its real signal. You get an{" "}
-          <strong style={{ color: "var(--ink)" }}>archetype card to post</strong> — no number, no tier —
-          and a <strong style={{ color: "var(--ink)" }}>private audit</strong> only you unlock. Opt-in, real
+          <strong style={{ color: "var(--ink)" }}>archetype card to post</strong>, no number, no tier, and a <strong style={{ color: "var(--ink)" }}>private audit</strong> only you unlock. Opt-in, real
           data, right to explanation: the way scoring a human should work.
         </p>
 

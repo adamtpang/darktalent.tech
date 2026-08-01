@@ -1,12 +1,12 @@
 import type { Legend } from "./types";
 
 /**
- * The seed roster. Ratings are an opinionated, for-the-culture take — a game,
+ * The seed roster. Ratings are an opinionated, for-the-culture take, a game,
  * not a ledger. Dead legends (the David Senra / "Founders" canon) render as
  * ICONs; living legends are pulled from the Forbes-tier of tech & business.
  *
  * Note the dark-talent thesis hiding in the dead icons: Ramanujan, Tesla, and
- * Turing carry sky-high INO/VIS but low CAP — genius the market underpriced.
+ * Turing carry sky-high INO/VIS but low CAP, genius the market underpriced.
  * That gap is the whole reason this platform exists.
  */
 export const LEGENDS: Legend[] = [

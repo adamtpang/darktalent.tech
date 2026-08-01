@@ -33,7 +33,7 @@ function initialPair(pool: VersusEntry[], seedA?: string): Pair {
   return { a, b: nearest(pool, a) };
 }
 
-/** Client-only random pair (called after interaction — never during SSR). */
+/** Client-only random pair (called after interaction, never during SSR). */
 function randomPair(pool: VersusEntry[]): Pair {
   const a = pool[Math.floor(Math.random() * pool.length)]!;
   const near = [...pool]

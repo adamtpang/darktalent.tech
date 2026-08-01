@@ -7,7 +7,7 @@ const ARROW: Record<AuditResult["trajectory"]["dir"], string> = {
 };
 
 /**
- * The PUBLIC face of an audit — an identity object, not a verdict.
+ * The PUBLIC face of an audit, an identity object, not a verdict.
  * No overall number, no tier word: an archetype is a role, not a rung, so this
  * is shareable by the median builder, not just the top decile.
  */

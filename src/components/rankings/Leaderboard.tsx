@@ -14,7 +14,7 @@ type SortKey = "elo" | "move" | "networth" | "name";
 function Move({ m }: { m: number }) {
   if (m > 0) return <span className="lb-up">▲{m}</span>;
   if (m < 0) return <span className="lb-down">▼{-m}</span>;
-  return <span className="lb-flat">—</span>;
+  return <span className="lb-flat">-</span>;
 }
 
 export function Leaderboard({ rows }: { rows: LeaderRow[] }) {

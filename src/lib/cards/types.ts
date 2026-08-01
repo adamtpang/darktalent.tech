@@ -1,5 +1,5 @@
 /**
- * The card model — a person reduced to a collectible.
+ * The card model, a person reduced to a collectible.
  * Six universal stats that work for tech AND business, living AND dead.
  */
 export type CardStatus = "living" | "dead";

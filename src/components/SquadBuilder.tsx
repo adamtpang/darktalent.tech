@@ -83,8 +83,8 @@ export function SquadBuilder() {
         }}
       >
         <div style={{ display: "flex", gap: 28 }}>
-          <Stat label="TEAM OVR" value={teamOvr || "—"} accent />
-          <Stat label="CHEMISTRY" value={chem ? `${chem}` : "—"} />
+          <Stat label="TEAM OVR" value={teamOvr || "-"} accent />
+          <Stat label="CHEMISTRY" value={chem ? `${chem}` : "-"} />
           <Stat label="FILLED" value={`${picked.length}/5`} />
         </div>
         <div style={{ display: "flex", gap: 8 }}>

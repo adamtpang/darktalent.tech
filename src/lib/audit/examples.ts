@@ -2,7 +2,7 @@ import type { TalentSignals } from "@/lib/scoring/types";
 import { baseSignals } from "@/lib/scoring/fixtures";
 
 /**
- * Zero-network demo candidates — clearly-labelled FICTIONAL composites so the
+ * Zero-network demo candidates, clearly-labelled FICTIONAL composites so the
  * /scout page has something real to render without a GitHub token or live call.
  * The numbers are hand-authored *signals*; the scores are computed by the real
  * engine, so what you see is genuine engine output, not fabricated ratings.
@@ -20,7 +20,7 @@ const ade: Example = {
   key: "ade-ogun",
   displayName: "Ade Ogun",
   tagline: "self-taught systems builder · Lagos · fictional composite",
-  playsLike: "a young Armin Ronacher — prolific infra output, quiet public presence",
+  playsLike: "a young Armin Ronacher, prolific infra output, quiet public presence",
   signals: baseSignals({
     handle: "ade-ogun",
     account: { accountAgeYears: 4, publicRepos: 31, followers: 120, following: 60 },
@@ -67,7 +67,7 @@ const lin: Example = {
   key: "lin-wei",
   displayName: "Lin Wei",
   tagline: "open-source maintainer & connector · remote · fictional composite",
-  playsLike: "an early-career DHH — the project's gravity is the community around it",
+  playsLike: "an early-career DHH, the project's gravity is the community around it",
   signals: baseSignals({
     handle: "lin-wei",
     account: { accountAgeYears: 6, publicRepos: 40, followers: 5200, following: 300 },

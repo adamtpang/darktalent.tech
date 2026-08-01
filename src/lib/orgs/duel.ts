@@ -3,9 +3,9 @@ import type { Legend } from "@/lib/cards/types";
 /**
  * The DEMAND side, in one frame: two rival "club" cards.
  *
- * IMPORTANT — unlike the /scout audit (real, consented GitHub data), a company's
+ * IMPORTANT, unlike the /scout audit (real, consented GitHub data), a company's
  * org stats cannot be computed by the engine. These are ILLUSTRATIVE editorial
- * ratings — a stage set for the "Sensible Transfers" format — and every surface
+ * ratings, a stage set for the "Sensible Transfers" format, and every surface
  * that shows them says so.
  */
 export interface Club {
@@ -25,7 +25,7 @@ export const INTEL: Club = {
   formLabel: "Relegation zone",
   trend: "down",
   diagnosis:
-    "Plays IDM — designs and builds its own chips — a style that lives or dies on process leadership, and they got caught behind the line. The gap is BUILD: a playmaker who can run a fab and a roadmap.",
+    "Plays IDM, designs and builds its own chips, a style that lives or dies on process leadership, and they got caught behind the line. The gap is BUILD: a playmaker who can run a fab and a roadmap.",
   legend: {
     id: "intel",
     name: "Intel",
@@ -48,7 +48,7 @@ export const AMD: Club = {
   formLabel: "Title race",
   trend: "up",
   diagnosis:
-    "The model club — proof the thesis is real. The signing that worked: a technical leader into the VISION/BUILD slot flipped the club's whole trajectory. Right talent, right seat, table turned.",
+    "The model club, proof the thesis is real. The signing that worked: a technical leader into the VISION/BUILD slot flipped the club's whole trajectory. Right talent, right seat, table turned.",
   legend: {
     id: "amd",
     name: "AMD",

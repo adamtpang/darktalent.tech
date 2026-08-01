@@ -5,9 +5,9 @@ import { TiltCard } from "@/components/TiltCard";
 import { INTEL, AMD, type Club } from "@/lib/orgs/duel";
 
 export const metadata: Metadata = {
-  title: "Intel ↔ AMD — the duel",
+  title: "Intel ↔ AMD: the duel",
   description:
-    "Sensible Transfers, companies edition: the fallen giant vs the perfect signing. A rival card duel — illustrative, not measured.",
+    "Sensible Transfers, companies edition: the fallen giant vs the perfect signing. A rival card duel, illustrative, not measured.",
 };
 
 function sparkPoints(values: number[], w: number, h: number): string {
@@ -73,12 +73,12 @@ export default function DuelPage() {
       <div className="wrap">
         <div className="eyebrow">Sensible Transfers · companies edition</div>
         <h1 className="h2" style={{ marginTop: 12 }}>
-          Intel <span style={{ color: "var(--ink-faint)" }}>↔</span> AMD — <span className="gold-text">the duel.</span>
+          Intel <span style={{ color: "var(--ink-faint)" }}>↔</span> AMD: <span className="gold-text">the duel.</span>
         </h1>
         <p className="lead" style={{ marginTop: 14, maxWidth: 640 }}>
-          People don't share org diagnoses — they share cards and pick sides. This one pairing is the whole
+          People don't share org diagnoses, they share cards and pick sides. This one pairing is the whole
           thesis in a frame: the <strong style={{ color: "var(--ink)" }}>fallen giant</strong> vs the{" "}
-          <strong style={{ color: "var(--ink)" }}>perfect signing</strong> that relegated it — and it comes
+          <strong style={{ color: "var(--ink)" }}>perfect signing</strong> that relegated it, and it comes
           with a built-in tribe ($INTC bears, $AMD bulls).
         </p>
 
@@ -129,7 +129,7 @@ export default function DuelPage() {
         </div>
 
         <p className="font-mono" style={{ color: "var(--ink-faint)", fontSize: 11, marginTop: 24, lineHeight: 1.7, maxWidth: 720 }}>
-          ⚠ Illustrative, not measured. Company org stats can't be computed by the scoring engine — these are
+          ⚠ Illustrative, not measured. Company org stats can't be computed by the scoring engine, these are
           editorial ratings for the "Sensible Transfers" format. Real, computed scores are reserved for
           consented individuals with real public code (see <Link href="/scout" style={{ color: "var(--gold)" }}>Scout</Link>).
         </p>

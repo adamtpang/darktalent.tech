@@ -1,4 +1,4 @@
-/** Minimal Elo trend line — the row-level miniature of the detail chart. */
+/** Minimal Elo trend line, the row-level miniature of the detail chart. */
 export function Sparkline({
   values,
   width = 120,

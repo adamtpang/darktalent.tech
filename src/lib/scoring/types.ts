@@ -5,7 +5,7 @@
  *   raw platform data ─▶ TalentSignals (normalized, source-agnostic)
  *                     ─▶ DarkTalentScore (explainable, 0–100)
  *
- * The scorer is a PURE function of TalentSignals — no I/O, no DB, no network.
+ * The scorer is a PURE function of TalentSignals, no I/O, no DB, no network.
  * That keeps it deterministic, unit-testable, and auditable. Auditability is
  * not optional here: we score *people*, so every number must be explainable
  * (GDPR "right to explanation"). Hence every pillar carries its `factors`.
@@ -23,7 +23,7 @@ export type SourceType =
 
 export interface LanguageStat {
   language: string;
-  /** Relative weight — e.g. bytes of code, or normalized usage 0..1. */
+  /** Relative weight, e.g. bytes of code, or normalized usage 0..1. */
   weight: number;
 }
 
@@ -44,7 +44,7 @@ export interface TalentSignals {
     totalForks: number;
     originalRepos: number; // non-fork repositories authored
     commitsLast12mo: number;
-    commitsPrev12mo: number; // the 12 months before that — drives trajectory
+    commitsPrev12mo: number; // the 12 months before that, drives trajectory
     contributionsLastYear: number;
     mergedPRs: number;
     reviewsGiven: number;
@@ -60,8 +60,7 @@ export interface TalentSignals {
 
   /**
    * "Establishment" markers. We deliberately DISCOUNT these. The Moneyball
-   * thesis is that pedigree is overpriced and raw output is underpriced —
-   * so high output + low pedigree is the undervalued "dark talent" we hunt.
+   * thesis is that pedigree is overpriced and raw output is underpriced, * so high output + low pedigree is the undervalued "dark talent" we hunt.
    */
   pedigree: {
     eliteEducation: boolean; // top-tier CS program
@@ -72,7 +71,7 @@ export interface TalentSignals {
 
   /** Optional, consent-based Network-State alignment signals. */
   alignment?: {
-    openSourceRatio: number; // 0..1 — share of work done in the open
+    openSourceRatio: number; // 0..1, share of work done in the open
     onChainActivity: boolean;
     remoteAsync: boolean;
     indieProjects: number; // bootstrapped / solo ships
@@ -99,13 +98,13 @@ export interface PillarScore {
   label: string;
   score: number; // 0..100
   weight: number; // effective weight in the blend (active pillars sum to 1)
-  confidence: number; // 0..1 — how much data backed this pillar
+  confidence: number; // 0..1, how much data backed this pillar
   factors: ScoreFactor[];
 }
 
 export interface DarkTalentScore {
   overall: number; // 0..100
-  confidence: number; // 0..1 — overall data confidence
+  confidence: number; // 0..1, overall data confidence
   pillars: PillarScore[];
   highlights: string[]; // human-readable spotlight lines
   modelVersion: string;

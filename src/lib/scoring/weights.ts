@@ -1,12 +1,11 @@
 import type { PillarWeights, PillarKey } from "./types";
 
 /**
- * Default pillar weights — the Moneyball thesis encoded as numbers.
+ * Default pillar weights, the Moneyball thesis encoded as numbers.
  *
  * We over-index on demonstrated ability, raw trajectory, and the undervaluation
  * signal; we under-index on network/vanity. Alignment is optional and only
- * contributes when the candidate has consented to share it (see engine.ts —
- * absent pillars have their weight redistributed, never silently zeroed).
+ * contributes when the candidate has consented to share it (see engine.ts, * absent pillars have their weight redistributed, never silently zeroed).
  *
  * Recruiters/communities can override these per-search to re-tune the lens.
  */

@@ -3,7 +3,7 @@ import type { AuditResult } from "@/lib/audit/types";
 import { StatRadar } from "@/components/rankings/StatRadar";
 
 /**
- * The PRIVATE face — the mirror the person unlocks for themselves. The overall,
+ * The PRIVATE face, the mirror the person unlocks for themselves. The overall,
  * the six-stat radar, the five explainable pillars, and honest development
  * levers. Coaching, not a caste label for the timeline.
  */
@@ -19,7 +19,7 @@ export function FullAudit({ audit }: { audit: AuditResult }) {
             className="font-mono"
             style={{ fontSize: 11, color: "var(--ink-faint)", textAlign: "center", marginTop: 4, lineHeight: 1.6 }}
           >
-            <b style={{ color: "var(--ink-dim)" }}>Overall {audit.overall}</b> — one input, not a verdict.
+            <b style={{ color: "var(--ink-dim)" }}>Overall {audit.overall}</b>, one input, not a verdict.
             <br />
             Never printed on the public card.
           </p>
@@ -52,7 +52,7 @@ export function FullAudit({ audit }: { audit: AuditResult }) {
         </div>
       </div>
 
-      {/* placement — closes the supply → demand loop */}
+      {/* placement, closes the supply → demand loop */}
       <div style={{ marginTop: 26, borderTop: "1px solid var(--line)", paddingTop: 22 }}>
         <div className="eyebrow" style={{ color: "var(--signal)" }}>Placement</div>
         <p style={{ marginTop: 10, fontSize: 15 }}>
@@ -67,7 +67,7 @@ export function FullAudit({ audit }: { audit: AuditResult }) {
         </p>
       </div>
 
-      {/* development areas — levers, not a rejection letter */}
+      {/* development areas, levers, not a rejection letter */}
       <div style={{ marginTop: 24, borderTop: "1px solid var(--line)", paddingTop: 22 }}>
         <div className="eyebrow" style={{ color: "var(--ink-faint)" }}>Development areas · three levers</div>
         <div className="two-col" style={{ marginTop: 16, gridTemplateColumns: "repeat(2, 1fr)" }}>

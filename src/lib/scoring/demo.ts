@@ -26,7 +26,7 @@ function render(signals: TalentSignals): void {
   }
 }
 
-console.log("\n  darktalent.tech — scoring engine demo");
+console.log("\n  darktalent.tech, scoring engine demo");
 render(DARK_TALENT);
 render(CREDENTIALED);
 console.log("");

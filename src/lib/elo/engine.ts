@@ -1,5 +1,5 @@
 /**
- * Elo engine — the spine of the rankings (clubelo/playerelo model).
+ * Elo engine, the spine of the rankings (clubelo/playerelo model).
  *
  * Pure & deterministic: no Date, no Math.random. Seeding maps (net worth,
  * overall) → an initial rating; head-to-head matches move ratings the standard
@@ -67,7 +67,7 @@ export function mulberry32(seed: number): () => number {
 
 /**
  * Reproducible ~`days`-long rating history for a person, ending near their seed
- * rating. Gentle mean-reverting random walk — enough wiggle to produce trends
+ * rating. Gentle mean-reverting random walk, enough wiggle to produce trends
  * and rank movement, small enough that the net-worth-driven order holds.
  */
 export function seededHistory(id: string, seedRating: number, days = 90): number[] {

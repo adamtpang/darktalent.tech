@@ -1,6 +1,6 @@
 import type { CardStats, Domain, Role } from "@/lib/cards/types";
 
-/** A ranked person — Forbes-caliber living tech/business figure. */
+/** A ranked person, Forbes-caliber living tech/business figure. */
 export interface RankPerson {
   id: string;
   name: string;

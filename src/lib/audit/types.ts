@@ -1,13 +1,13 @@
 import type { CardStats } from "@/lib/cards/types";
 
 /**
- * The audit domain — a *consented* individual scored from their real public
+ * The audit domain, a *consented* individual scored from their real public
  * GitHub. Deliberately split into two faces (see build.ts and the /scout UI):
  *
- *   PUBLIC  — an identity object: archetype, strengths, a trajectory *direction*.
+ *   PUBLIC, an identity object: archetype, strengths, a trajectory *direction*.
  *             No overall number, no tier word. Identity isn't zero-sum, so the
  *             median builder's card is as postable as the top one's.
- *   PRIVATE — the full mirror the person unlocks for themselves: overall, the
+ *   PRIVATE, the full mirror the person unlocks for themselves: overall, the
  *             six-stat radar, the five explainable pillars, development areas.
  *
  * This is the ethics baked into the type, not bolted onto the copy.

@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 const entries: VersusEntry[] = RANKED.map((b) => {
   const legend = toLegend(b);
-  legend.blurb = undefined; // not rendered on the card — trims client payload
+  legend.blurb = undefined; // not rendered on the card, trims client payload
   return { id: b.id, elo: b.elo, legend };
 });
 

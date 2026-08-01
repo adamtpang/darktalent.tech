@@ -35,20 +35,21 @@ export default function Home() {
       <section className="section" style={{ paddingTop: 72, paddingBottom: 64 }}>
         <div className="wrap hero-grid">
           <div className="rise">
-            <div className="eyebrow">Moneyball · for builders</div>
+            <div className="eyebrow">The hiring side of skill.supply</div>
             <h1 className="h-title" style={{ marginTop: 18 }}>
-              Everyone gets
-              <br />
-              a <span className="gold-text">card.</span>
+              Hire the <span className="gold-text">1729</span> hiding in plain sight.
             </h1>
             <p className="lead" style={{ marginTop: 22, maxWidth: 480 }}>
-              Scout undervalued talent the way Oakland scouted hitters. Rate the
-              legends — living and dead — build your dream squad, and surface the{" "}
-              <strong style={{ color: "var(--ink)" }}>1729 hiding in plain sight.</strong>
+              <a href="https://skill.supply" target="_blank" rel="noreferrer" style={{ color: "var(--signal)" }}>skill.supply</a>{" "}
+              makes the supply irresistible, free for seekers forever. darktalent is the other
+              half: paste a real req and get{" "}
+              <strong style={{ color: "var(--ink)" }}>five scored candidates matched to that seat</strong>,
+              with the evidence behind every number. Signal over pedigree.
             </p>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginTop: 30 }}>
-              <Link href="/rankings" className="btn btn-gold">See the rankings →</Link>
-              <Link href="/versus" className="btn btn-ghost">Play head-to-head</Link>
+              <Link href="/hiring" className="btn btn-gold">Build a shortlist →</Link>
+              <Link href="/scout" className="btn btn-ghost">Get your card</Link>
+              <a href="https://buy.stripe.com/6oU00jgvwgNffYQgl3aMU0G" target="_blank" rel="noopener noreferrer" className="btn btn-ghost">Founding license · $59 →</a>
             </div>
             <div
               className="font-mono"
@@ -114,7 +115,7 @@ export default function Home() {
               <div className="eyebrow">Live rankings</div>
               <h2 className="h2" style={{ marginTop: 12 }}>The Forbes list, ranked by <span className="gold-text">Elo</span>.</h2>
               <p className="lead" style={{ marginTop: 12, maxWidth: 520 }}>
-                Net worth is the market cap. Elo is the game — and every head-to-head vote moves it.
+                Net worth is the market cap. Elo is the game, and every head-to-head vote moves it.
               </p>
             </div>
             <Link href="/rankings" className="btn btn-ghost">Full rankings →</Link>
@@ -135,7 +136,7 @@ export default function Home() {
               <Link key={r.id} href={`/p/${r.id}`} className="lb-row">
                 <span className="lb-c-rank"><span className="lb-rank" data-top={r.rank <= 3}><i>#</i>{r.rank}</span></span>
                 <span className="lb-c-move">
-                  {r.move > 0 ? <span className="lb-up">▲{r.move}</span> : r.move < 0 ? <span className="lb-down">▼{-r.move}</span> : <span className="lb-flat">—</span>}
+                  {r.move > 0 ? <span className="lb-up">▲{r.move}</span> : r.move < 0 ? <span className="lb-down">▼{-r.move}</span> : <span className="lb-flat">-</span>}
                 </span>
                 <span className="lb-c-builder">
                   <span className="lb-mono" data-tier={tierFromOverall(r.overall)}>{initials(r.name)}</span>
@@ -160,7 +161,7 @@ export default function Home() {
             Talent is everywhere. Opportunity isn't.
           </h2>
           <p className="lead" style={{ marginTop: 16, maxWidth: 640 }}>
-            Legacy filters reward pedigree — the right school, the right logo. We
+            Legacy filters reward pedigree, the right school, the right logo. We
             reward signal: what you've actually built. Ramanujan had no
             credentials and the notebook of a century. The market underpriced
             him. We exist to close that gap.
@@ -259,7 +260,7 @@ export default function Home() {
                 Who's on your founding five?
               </h2>
               <p className="lead" style={{ marginTop: 14, maxWidth: 460 }}>
-                Drop legends onto the pitch — Vision, Build, Influence, Capital,
+                Drop legends onto the pitch, Vision, Build, Influence, Capital,
                 Grit. Get a team rating and chemistry. Then share it.
               </p>
               <Link href="/squad" className="btn btn-gold" style={{ marginTop: 24 }}>
@@ -297,7 +298,7 @@ export default function Home() {
               Get your <span className="gold-text">card.</span>
             </h2>
             <p className="lead" style={{ margin: "18px auto 0", maxWidth: 520 }}>
-              Enter a GitHub handle and the engine reads its real signal — you get an
+              Enter a GitHub handle and the engine reads its real signal, you get an
               archetype card to post and a private audit only you unlock. Then refer
               undervalued talent into the network state and level up together.
             </p>
@@ -310,7 +311,7 @@ export default function Home() {
               </a>
             </div>
             <p className="font-mono" style={{ color: "var(--ink-faint)", fontSize: 11, marginTop: 22 }}>
-              Live now — audited from your public GitHub · your data, your consent
+              Live now, audited from your public GitHub · your data, your consent
             </p>
           </div>
         </div>

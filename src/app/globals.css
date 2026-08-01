@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /* ─────────────────────────────────────────────────────────────
-   darktalent.tech — "Obsidian Vault" design system
+   darktalent.tech, the "Obsidian Vault" design system
    Dark blueprint backdrop · foil collectible cards · gold ICONs
    ───────────────────────────────────────────────────────────── */
 
@@ -17,7 +17,7 @@
   --gold: #e7c24c;
   --gold-bright: #fbe9a6;
   --gold-deep: #b8860b;
-  --signal: #5eead4; /* teal — "live" / interactive accent */
+  --signal: #5eead4; /* teal, the "live" / interactive accent */
   --signal-dim: #2dd4bf;
   --danger: #fb7185;
 
@@ -649,6 +649,37 @@ a { color: inherit; text-decoration: none; }
 .stamp { margin-top: 20px; padding-top: 14px; border-top: 1px solid var(--line); font-family: var(--font-mono), monospace; font-size: 10.5px; line-height: 1.6; color: var(--ink-faint); }
 
 @media (max-width: 860px) { .scout-layout { grid-template-columns: 1fr !important; } }
+
+/* ───────────── Hiring / shortlist ───────────── */
+.jd-input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--line-2);
+  border-radius: 12px;
+  padding: 14px 16px;
+  color: var(--ink);
+  font-family: var(--font-mono), monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  outline: none;
+  resize: vertical;
+}
+.jd-input:focus { border-color: var(--signal); }
+.jd-input:focus-visible { outline: 2px solid var(--signal); outline-offset: 2px; }
+
+/* ───────────── Fleet ring ───────────── */
+.fleet-ring {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  align-items: center;
+  font-family: var(--font-mono), monospace;
+  font-size: 11.5px;
+  color: var(--ink-faint);
+}
+.fleet-ring a { color: var(--ink-dim); }
+.fleet-ring a:hover { color: var(--gold); }
+.fleet-ring .sep { opacity: 0.5; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }

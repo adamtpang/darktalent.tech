@@ -73,7 +73,7 @@ export const DARK_TALENT: TalentSignals = baseSignals({
 
 /**
  * The contrast: elite education + FAANG logo, but modest *public* output.
- * Likely a strong engineer — but not undervalued, so the dark signal is low.
+ * Likely a strong engineer, but not undervalued, so the dark signal is low.
  */
 export const CREDENTIALED: TalentSignals = baseSignals({
   handle: "credentialed",

@@ -124,7 +124,7 @@ export function ScoutClient({
               <div style={{ maxWidth: 340, padding: 20 }}>
                 <div style={{ fontSize: 26, marginBottom: 10 }}>🔒</div>
                 <p style={{ fontSize: 15 }}>
-                  The <b style={{ color: "var(--ink)" }}>archetype card</b> is what ships publicly — an identity, never a rank.
+                  The <b style={{ color: "var(--ink)" }}>archetype card</b> is what ships publicly, an identity, never a rank.
                 </p>
                 <p style={{ fontSize: 13.5, marginTop: 10 }}>
                   The overall, the six-stat radar, and the coaching stay private until{" "}

@@ -2,18 +2,18 @@ import { Octokit } from "@octokit/rest";
 import type { TalentSignals, LanguageStat } from "../scoring/types";
 
 /**
- * GitHub ingestion — turns a public GitHub handle into the normalized
+ * GitHub ingestion, turns a public GitHub handle into the normalized
  * `TalentSignals` the scorer consumes.
  *
  * Privacy posture: this reads ONLY public data. A token (server GITHUB_TOKEN or
- * a candidate's own OAuth token) is used purely to raise the rate limit — never
+ * a candidate's own OAuth token) is used purely to raise the rate limit, never
  * to access private repos here. Every network call degrades gracefully: if the
  * Search API is rate-limited, the affected signal falls back to 0 rather than
  * failing the whole ingestion.
  *
  * Note on accuracy: commit/PR/review counts come from the Search API, which is
  * a good approximation. For production-grade exactness, swap these for a single
- * GraphQL `contributionsCollection` query — see fetchContributionsGraphQL TODO.
+ * GraphQL `contributionsCollection` query, see fetchContributionsGraphQL TODO.
  */
 
 export interface GitHubIngestOptions {
@@ -110,7 +110,7 @@ export async function fetchGitHubSignals(
     },
     craft: { languages, reposWithTests, reposWithCI, reposWithDocs },
     // Pedigree comes from elsewhere (LinkedIn import, self-report). Default to
-    // "no establishment markers" — which is exactly the dark-talent baseline.
+    // "no establishment markers", which is exactly the dark-talent baseline.
     pedigree: {
       eliteEducation: false,
       bigTechExperience: false,

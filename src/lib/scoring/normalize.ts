@@ -1,5 +1,5 @@
 /**
- * Numeric helpers — turn unbounded, skewed counts into bounded 0..100 scores.
+ * Numeric helpers, turn unbounded, skewed counts into bounded 0..100 scores.
  */
 
 export const clamp = (x: number, lo = 0, hi = 100): number =>
@@ -10,7 +10,7 @@ export const clamp01 = (x: number): number => Math.min(1, Math.max(0, x));
 /**
  * Log-saturating scale: maps a non-negative count onto 0..100, where `k` is the
  * reference value that lands near ~100. Logarithmic so the first 10 stars matter
- * far more than the 1000th — diminishing returns — and so a handful of
+ * far more than the 1000th, diminishing returns, and so a handful of
  * superstars don't dwarf everyone else into the floor.
  *
  *   logScale(0, k)   = 0

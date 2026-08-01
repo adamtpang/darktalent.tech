@@ -1,4 +1,4 @@
-// AUTO-GENERATED — Forbes-caliber living people (seed). Forbes 2025 (World's Billionaires, April 2025; values approximate)
+// AUTO-GENERATED, Forbes-caliber living people (seed). Forbes 2025 (World's Billionaires, April 2025; values approximate)
 // Net-worth figures are approximate. Regenerate via the rankings-research workflow.
 import type { RankPerson } from "./types";
 

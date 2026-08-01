@@ -16,7 +16,7 @@ export default function CardsPage() {
         </h1>
         <p className="lead" style={{ marginTop: 14, maxWidth: 580 }}>
           Living legends from the Forbes tier. Dead legends from the Founders
-          canon, rendered as gold ICONs. Six stats, one number — pedigree not
+          canon, rendered as gold ICONs. Six stats, one number, pedigree not
           included.
         </p>
         <div style={{ marginTop: 38 }}>
