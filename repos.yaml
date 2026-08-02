@@ -7,7 +7,8 @@ ranks: talent
 
 provides:
   - talent-scoring: proof-of-work scoring from public signal
-  - card-ui: talent-as-card rendering
+  - card-ui: talent-as-card rendering (PlayerCard, CardWall, IdentityCard)
+  - talent-profile-api: the TalentProfile shared object that wires the trifecta, see CARD_API.md
 
 stack: [next, prisma, zod, recharts]
 
@@ -19,4 +20,4 @@ kin:
   - repo: pokedex.life
     why: shares the entity-as-card pattern
 
-canon: adamtpang/repo-protocol
+canon: ECOSYSTEM.md (the Talent Trifecta constitution, identical in all three repos)
