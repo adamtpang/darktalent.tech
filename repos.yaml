@@ -1,0 +1,22 @@
+# repos.yaml v0 — see github.com/adamtpang/repo-protocol
+repo: darktalent.tech
+is: Moneyball for talent: scout the undervalued, rate the legends. Signal over pedigree.
+url: https://darktalent.tech
+cluster: talent-stack
+ranks: talent
+
+provides:
+  - talent-scoring: proof-of-work scoring from public signal
+  - card-ui: talent-as-card rendering
+
+stack: [next, prisma, zod, recharts]
+
+kin:
+  - repo: skill.supply
+    why: darktalent scores talent; skill.supply places them
+  - repo: company.university
+    why: consumes its skill taxonomy
+  - repo: pokedex.life
+    why: shares the entity-as-card pattern
+
+canon: adamtpang/repo-protocol
