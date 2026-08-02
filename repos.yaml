@@ -6,9 +6,15 @@ cluster: talent-stack
 ranks: talent
 
 provides:
-  - talent-scoring: proof-of-work scoring from public signal
-  - card-ui: talent-as-card rendering (PlayerCard, CardWall, IdentityCard)
-  - talent-profile-api: the TalentProfile shared object that wires the trifecta, see CARD_API.md
+  - id: talent-scoring
+    what: proof-of-work scoring from public signal
+    at: src/lib/scoring
+  - id: card-ui
+    what: talent-as-card rendering (PlayerCard, CardWall, IdentityCard)
+    at: src/components/PlayerCard.tsx
+  - id: talent-profile-api
+    what: the TalentProfile shared object that wires the trifecta, see CARD_API.md
+    at: CARD_API.md
 
 stack: [next, prisma, zod, recharts]
 
