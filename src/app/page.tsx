@@ -49,7 +49,7 @@ export default function Home() {
             <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginTop: 30 }}>
               <Link href="/hiring" className="btn btn-gold">Build a shortlist →</Link>
               <Link href="/scout" className="btn btn-ghost">Get your card</Link>
-              <a href="https://buy.stripe.com/6oU00jgvwgNffYQgl3aMU0G" target="_blank" rel="noopener noreferrer" className="btn btn-ghost">Founding license · $59 →</a>
+              <a href="https://buy.stripe.com/dRmaEX9340OhcME6KtaMU1F" target="_blank" rel="noopener noreferrer" className="btn btn-ghost">Buy a shortlist, $500 →</a>
             </div>
             <div
               className="font-mono"

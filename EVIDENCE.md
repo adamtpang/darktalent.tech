@@ -108,38 +108,56 @@ integration snippet is written out in `CARD_API.md` so it is a copy-paste job.
 | Buyer | Founder or hiring manager with one open technical seat |
 | Problem | 500 applications, no signal about who can actually build |
 | Cure | Five scored candidates matched to that seat, with evidence per candidate |
-| Price paid | **none yet.** The Shortlist at $500 is drafted in OFFER.md and awaiting Adam's yes |
+| Price paid | **none yet.** The Shortlist at $500 is approved and live (2026-08-06); no stranger has paid |
 | Proof of value | none yet. No shortlist has been sold or delivered to a stranger |
 | Date | n/a |
 
-## Fleet-ready checklist
+## 2026-08-06, later: the pricing conflict resolved, and the site re-verified live
+
+Re-checked every claim in this file against live systems rather than trusted
+as-is, since the last update was hours old and other products in this fleet
+turned out to have stale claims. What held up, and what changed:
+
+| Check | Verdict | How verified |
+| --- | --- | --- |
+| Deploy is current | **yes** | `get_deployment` returns `READY` at commit `9f5ed9d`; the one commit ahead of it (`e76ded1`) is an EVIDENCE.md-only change, confirmed via `git show --stat` |
+| `/`, `/hiring`, `/api/card` all live | **yes** | all 200, `/api/card` reports `{"accepting":true}` |
+| Fleet footer + fleet.json | **yes, unchanged** | live HTML has all three links; `fleet.json` already reads `tier: 1`, `status: "live"` |
+| Scoring engine depends on the (broken) Vercel AI Gateway | **no dependency** | `grep` for anthropic/claude/ai-gateway across `src/` returns nothing; darktalent's scoring is deterministic on GitHub signal data, unaffected by skill.supply's funding crisis |
+| Vercel Web Analytics enabled | **no** | `get_web_analytics` returns 404 for this project, same as every other product checked today |
+
+**The two-price conflict is resolved.** Presented both options to Adam
+directly; he chose The Shortlist. Archived the $59 rail (product and payment
+link both `active: false`; the price itself cannot be archived while it
+remains its product's default price, a Stripe quirk, but it is fully dead
+since the link and product are both off). Minted and labeled the real offer:
+
+- Product `prod_V1NgtTXa3Avu6M`, price `price_1U1KujFL7C10dNyG5KtIIRLb`,
+  nickname `darktalent.tech The Shortlist - $500`, `keep: true`.
+- Payment link https://buy.stripe.com/dRmaEX9340OhcME6KtaMU1F, verified
+  rendering in a browser: "darktalent.tech The Shortlist", $500.00.
+- `src/app/page.tsx` hero CTA now points at this link instead of the retired
+  $59 button. Build passes (`npm run build`, 122 pages, `/hiring` correctly
+  dynamic). **Not deployed.** This project deploys only via explicit
+  `vercel deploy --prod` (checked: every recent deployment shows CLI-sourced
+  metadata, not a git-push trigger), and that step is Adam's.
+- `OUTREACH.md` Variant A now quotes the approved $500 price, per the file's
+  own instruction to add it once approved. Its pool-depth honesty note was
+  also updated to reflect the 2 real consented people now in the pool
+  (torvalds, sindresorhus) rather than composites only.
+
+## Fleet-ready checklist, 2026-08-06
 
 | # | Item | Status |
 | --- | --- | --- |
 | 1 | OFFER.md filled, no brackets | **YES** |
-| 2 | Landing states the offer in the first screen | **YES** for the offer, **NO** for the price, which is unapproved |
-| 3 | Exactly ONE labeled Stripe price, active and verified | **NO.** See the conflict below |
-| 4 | Vercel Analytics enabled | **PARTIAL.** `<Analytics />` is wired in `layout.tsx` and `@vercel/analytics` is installed. The dashboard toggle is Adam's and was not verified this session |
+| 2 | Landing states the offer in the first screen | **YES**, offer and price both, now that the price is approved |
+| 3 | Exactly ONE labeled Stripe price, active and verified | **YES.** Conflict resolved, verified rendering |
+| 4 | Vercel Analytics enabled | **NO.** Code wired (`<Analytics />`, `@vercel/analytics` installed); dashboard toggle confirmed not enabled via `get_web_analytics` (404) |
 | 5 | Entry in fleet.json, footer ring on the site | **YES** |
-| 6 | Hub card, LinkedIn post, community post | **NO.** Outreach drafted in OUTREACH.md, nothing posted or sent |
+| 6 | Hub card, LinkedIn post, community post | **NO.** Outreach drafted in OUTREACH.md, now price-complete, still nothing sent |
 | 7 | EVIDENCE.md logs what happened | **YES**, this file |
 
-**Not fleet-ready.** Blocked on items 3 and 6, both of which need Adam.
-
-## Open decision for Adam: two prices, one product
-
-The landing carries an uncommitted `Founding license · $59` button pointing at
-`https://buy.stripe.com/6oU00jgvwgNffYQgl3aMU0G`. It was not added by this
-session and it points at a different buyer than the one in OFFER.md.
-
-The shared rule is exactly one Stripe price per product. So one of these has to
-go:
-
-- **Option A:** keep The Shortlist at $500 (companies pay, matches LAUNCH.md and
-  ECOSYSTEM.md), archive the $59 founding license.
-- **Option B:** keep the $59 founding license, and rewrite OFFER.md around
-  whatever it actually sells.
-
-The $59 button was left in place rather than deleted, because removing another
-session's pricing decision is Adam's call. It was also not verified as rendering,
-because the Stripe connector is not authorized in this session.
+**Not fleet-ready.** Blocked on: deploying the price fix to production
+(Adam), toggling Analytics (Adam), and actually sending outreach (Adam,
+never this agent).

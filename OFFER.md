@@ -41,23 +41,21 @@ Why $500 and not free or $5,000:
 - Crediting it against the placement fee makes the upgrade the obvious next
   step rather than a second negotiation.
 
-## Status: DRAFTED, NOT MINTED
+## Status: LIVE, approved 2026-08-06
 
-Per the money artifact rule in `Aether/UPGRADE_PROMPTS.md` prompt 6 step 2, this
-price is drafted and awaiting Adam's yes. **No Stripe price has been minted or
-reactivated for The Shortlist.** On approval, mint exactly ONE price:
+Adam resolved the two-price conflict: The Shortlist is the real offer. The
+$59 "founding lifetime license" (`prod_Us03avTjcH8dJP`, predated this offer,
+matched no feature actually built on the site) is archived, product and
+payment link both `active: false`.
 
-- nickname: `darktalent.tech The Shortlist - $500`
-- metadata: `keep: true`
-- Reactivate an archived equivalent rather than minting a duplicate.
-
-**Open conflict for Adam.** The landing currently carries an uncommitted
-`Founding license · $59` button pointing at
-`https://buy.stripe.com/6oU00jgvwgNffYQgl3aMU0G`. It was not added by this
-session. It predates this offer and it points at a different buyer than the one
-above. The shared rule is exactly one Stripe price per product, so one of these
-has to go. It was left in place rather than deleted, because removing another
-session's pricing decision is Adam's call, not this session's.
+- Product: `prod_V1NgtTXa3Avu6M`
+- Price: `price_1U1KujFL7C10dNyG5KtIIRLb`, nickname
+  `darktalent.tech The Shortlist - $500`, `keep: true`
+- Payment link: https://buy.stripe.com/dRmaEX9340OhcME6KtaMU1F, verified
+  rendering ("darktalent.tech The Shortlist", $500.00)
+- Landing (`src/app/page.tsx`) points its CTA at this link, replacing the
+  retired $59 button. Not yet deployed; deploys are Adam's for this project
+  (CLI-only, `vercel deploy --prod`).
 
 ## Grand-slam checks
 
