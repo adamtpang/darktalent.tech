@@ -11,6 +11,11 @@ export const metadata: Metadata = {
     "The hiring side of skill.supply. Paste a job description, get five scored candidates matched to that seat, with the evidence behind every number.",
 };
 
+// The initial shortlist reads the live pool, so this page must render per
+// request rather than freeze at build time. A static build would keep
+// showing "no one has opted in yet" forever, even after real opt-ins land.
+export const dynamic = "force-dynamic";
+
 const SEED_JD = `Senior Infrastructure Engineer
 
 Own our distributed systems platform. Ship production Rust and Go services,
