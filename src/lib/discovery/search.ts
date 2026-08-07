@@ -1,4 +1,5 @@
 import { Octokit } from "@octokit/rest";
+import { withBackoff } from "@/lib/integrations/backoff";
 
 /**
  * GitHub discovery: the "mobile telescope."
@@ -46,6 +47,22 @@ export const DEFAULT_SEEDS: SearchSeed[] = [
   { language: "Go", location: "Egypt", minRepos: 5 },
   { language: "Rust", location: "Brazil", minRepos: 5 },
   { language: "Python", location: "Argentina", minRepos: 5 },
+  { language: "Java", location: "Ghana", minRepos: 5 },
+  { language: "PHP", location: "South Africa", minRepos: 5 },
+  { language: "Kotlin", location: "Sri Lanka", minRepos: 5 },
+  { language: "C++", location: "Nepal", minRepos: 5 },
+  { language: "TypeScript", location: "Colombia", minRepos: 5 },
+  { language: "Go", location: "Peru", minRepos: 5 },
+  { language: "Rust", location: "Romania", minRepos: 5 },
+  { language: "Python", location: "Serbia", minRepos: 5 },
+  { language: "JavaScript", location: "Belarus", minRepos: 5 },
+  { language: "Java", location: "Kazakhstan", minRepos: 5 },
+  { language: "TypeScript", location: "Uzbekistan", minRepos: 5 },
+  { language: "Go", location: "Turkey", minRepos: 5 },
+  { language: "Python", location: "Morocco", minRepos: 5 },
+  { language: "PHP", location: "Tunisia", minRepos: 5 },
+  { language: "Swift", location: "Ethiopia", minRepos: 5 },
+  { language: "Ruby", location: "Mexico", minRepos: 5 },
 ];
 
 export interface CandidateHandle {
@@ -73,12 +90,22 @@ export async function searchSeed(
   const octokit = new Octokit({ auth: opts.token ?? process.env.GITHUB_TOKEN });
   const perSeed = opts.perSeed ?? 8;
 
-  const { data } = await octokit.search.users({
-    q: buildQuery(seed),
-    sort: "repositories",
-    order: "desc",
-    per_page: perSeed,
-  });
+  const { data } = await withBackoff(
+    () =>
+      octokit.search.users({
+        q: buildQuery(seed),
+        sort: "repositories",
+        order: "desc",
+        per_page: perSeed,
+      }),
+    {
+      maxAttempts: 4,
+      onRetry: (attempt, delayMs) =>
+        console.warn(
+          `    rate limited on ${seed.language}/${seed.location}, retry ${attempt} in ${(delayMs / 1000).toFixed(1)}s`,
+        ),
+    },
+  );
 
   return data.items.map((u) => ({ handle: u.login, seed }));
 }

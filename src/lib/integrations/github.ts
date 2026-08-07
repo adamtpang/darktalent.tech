@@ -1,5 +1,6 @@
 import { Octokit } from "@octokit/rest";
 import type { TalentSignals, LanguageStat } from "../scoring/types";
+import { withBackoff } from "./backoff";
 
 /**
  * GitHub ingestion, turns a public GitHub handle into the normalized
@@ -140,14 +141,19 @@ async function countSearch(
   q: string,
 ): Promise<number> {
   try {
-    if (kind === "commits") {
-      const { data } = await octokit.search.commits({ q, per_page: 1 });
+    // A rate-limited candidate should not silently score as if they shipped
+    // nothing: retry the transient case before accepting the 0.
+    return await withBackoff(async () => {
+      if (kind === "commits") {
+        const { data } = await octokit.search.commits({ q, per_page: 1 });
+        return data.total_count;
+      }
+      const { data } = await octokit.search.issuesAndPullRequests({ q, per_page: 1 });
       return data.total_count;
-    }
-    const { data } = await octokit.search.issuesAndPullRequests({ q, per_page: 1 });
-    return data.total_count;
+    }, { maxAttempts: 3 });
   } catch {
-    // Rate-limited or unavailable → don't fail the whole ingest.
+    // Unavailable after retries, or a non-rate-limit error → don't fail the
+    // whole ingest, degrade this one signal to 0.
     return 0;
   }
 }
