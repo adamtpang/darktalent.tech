@@ -167,7 +167,11 @@ export async function upsertCard(
     });
 
     return { ok: true, handle: input.handle, overall: score.overall, created: !existing };
-  } catch {
+  } catch (e) {
+    // A bare catch{} here once discarded the real error entirely, making a
+    // real production failure undiagnosable from the outside. Log it; never
+    // swallow a write failure silently again.
+    console.error("upsertCard write failed:", e instanceof Error ? e.message : e);
     return { ok: false, code: "DB_FAILED", error: "Could not write the card." };
   }
 }
