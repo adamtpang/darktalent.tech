@@ -3,6 +3,7 @@
 import { fetchGitHubSignals } from "@/lib/integrations/github";
 import { buildAudit } from "@/lib/audit/build";
 import { getExample } from "@/lib/audit/examples";
+import { upsertCard } from "@/lib/card/service";
 import type { AuditResult } from "@/lib/audit/types";
 
 export type AuditResponse =
@@ -58,4 +59,30 @@ export async function runAudit(rawHandle: string): Promise<AuditResponse> {
     }
     return { ok: false, error: "Couldn't reach GitHub just now. Try a demo card below." };
   }
+}
+
+export type ClaimResponse =
+  | { ok: true; overall: number }
+  | { ok: false; error: string };
+
+/**
+ * Claim your own card: same-origin, so no CORS needed, unlike skill.supply's
+ * cross-origin opt-in. Deliberately does NOT reuse the audit already shown on
+ * screen, it re-fetches so the claimed score is fresh, not whatever was
+ * cached when the person first looked themselves up. This is the person
+ * clicking their own consent; nothing here should ever be called on someone
+ * else's behalf.
+ */
+export async function claimCard(handle: string, contact: boolean): Promise<ClaimResponse> {
+  const clean = handle.trim().replace(/^@/, "");
+  if (!/^[a-zA-Z0-9-]{1,39}$/.test(clean)) {
+    return { ok: false, error: "Not a valid GitHub handle." };
+  }
+  const result = await upsertCard({
+    handle: clean,
+    origin: "darktalent.tech",
+    consent: { display: true, contact },
+  });
+  if (!result.ok) return { ok: false, error: result.error };
+  return { ok: true, overall: result.overall };
 }

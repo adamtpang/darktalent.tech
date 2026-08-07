@@ -5,6 +5,7 @@ import type { AuditResult } from "@/lib/audit/types";
 import { runAudit } from "@/app/scout/actions";
 import { IdentityCard } from "./IdentityCard";
 import { FullAudit } from "./FullAudit";
+import { ClaimCard } from "./ClaimCard";
 
 interface ExampleChip {
   key: string;
@@ -103,6 +104,7 @@ export function ScoutClient({
           >
             {revealed ? "Hide the private audit" : "🔒 Unlock the full audit (private)"}
           </button>
+          {!audit.isExample && <ClaimCard handle={audit.handle} />}
         </div>
 
         <div>
