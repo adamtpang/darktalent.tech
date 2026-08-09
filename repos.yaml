@@ -25,5 +25,7 @@ kin:
     why: consumes its skill taxonomy
   - repo: pokedex.life
     why: shares the entity-as-card pattern
+  - repo: sprite.email
+    why: it already has a real, scope-consented Gmail send path (sendNewThread/sendReplyInThread in src/lib/chat.ts) that darktalent's outreach step needs and currently has none of; both apply the same discipline, consent scoped narrowly, checked against what was actually granted not what was asked for, revocable
 
 canon: ECOSYSTEM.md (the Talent Trifecta constitution, identical in all three repos)
