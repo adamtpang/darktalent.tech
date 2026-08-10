@@ -1,4 +1,4 @@
-# North star — the platonic ideal version of darktalent.tech
+# North star, the platonic ideal version of darktalent.tech
 
 One sentence: when it's perfect, darktalent.tech is the market where technical
 talent is priced by demonstrated public output instead of pedigree, where a
@@ -66,7 +66,7 @@ over from memory.
   backwards: outreach has to happen before a stranger can find the claim
   page, so sending comes first. Both `CLAIMED` rows (`torvalds`,
   `sindresorhus`) were created 2026-08-06, the same day the database went
-  live, both `origin: "darktalent.tech"` — these are test claims exercising
+  live, both `origin: "darktalent.tech"`, these are test claims exercising
   the flow, not a real person's own opt-in. Zero real consented claims
   exist. One invite is fully drafted, addressed to `kubkon`, and has not
   been sent. Sending it is Adam's own action; per this repo's standing rule
