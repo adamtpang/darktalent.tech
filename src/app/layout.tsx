@@ -79,6 +79,7 @@ function Nav() {
         </Link>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <Link href="/scout" className="chip">Scout</Link>
+          <Link href="/board" className="chip nav-hide-sm">Board</Link>
           <Link href="/duel" className="chip nav-hide-sm">Duel</Link>
           <Link href="/rankings" className="chip nav-hide-sm">Rankings</Link>
           <Link href="/hiring" className="btn btn-gold" style={{ padding: "9px 16px" }}>
@@ -108,6 +109,7 @@ function Footer() {
         <div style={{ display: "flex", gap: 28, fontSize: 13, color: "var(--ink-dim)" }}>
           <Link href="/hiring">Hire</Link>
           <Link href="/scout">Scout</Link>
+          <Link href="/board">Board</Link>
           <Link href="/cards">Legends</Link>
           <a href="https://ns.com" target="_blank" rel="noreferrer">Network School ↗</a>
         </div>

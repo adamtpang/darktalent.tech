@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { buildAudit } from "@/lib/audit/build";
 import { EXAMPLES } from "@/lib/audit/examples";
 import { ScoutClient } from "@/components/scout/ScoutClient";
+import { fetchGitHubSignals } from "@/lib/integrations/github";
 
 export const metadata: Metadata = {
   title: "Scout: audit your GitHub",
@@ -9,14 +10,35 @@ export const metadata: Metadata = {
     "A professional audit of any public GitHub. Ships an archetype card you can post; keeps the score private. The Athletic × Visual Capitalist treatment for builders.",
 };
 
-export default function ScoutPage() {
+// A ?handle= link (from the public leaderboard's "is this you?" CTA) loads
+// that real audit directly, so claiming is one click, not a lookup plus a
+// claim. Falls back to the usual example on a bad or missing handle.
+export default async function ScoutPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ handle?: string }>;
+}) {
+  const { handle: rawHandle } = await searchParams;
+  const handle = rawHandle?.trim().replace(/^@/, "");
+
   const first = EXAMPLES[0]!;
-  const initial = buildAudit(first.signals, {
+  let initial = buildAudit(first.signals, {
     displayName: first.displayName,
     tagline: first.tagline,
     playsLike: first.playsLike,
     isExample: true,
   });
+
+  if (handle && /^[a-zA-Z0-9-]{1,39}$/.test(handle)) {
+    try {
+      const signals = await fetchGitHubSignals(handle);
+      initial = buildAudit(signals, { displayName: `@${handle}`, tagline: "audited from public GitHub" });
+    } catch {
+      // Rate limit or a handle that no longer resolves: fall back silently
+      // to the example above rather than breaking the page.
+    }
+  }
+
   const chips = EXAMPLES.map((e) => ({ key: e.key, displayName: e.displayName }));
 
   return (

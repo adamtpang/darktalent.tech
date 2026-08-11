@@ -14,8 +14,15 @@ import type { PoolCandidate } from "@/lib/shortlist/pool";
  * object is TalentProfile plus its Score, Artifact and Placement history.
  *
  * Two rules are enforced here rather than trusted to callers:
- *  1. No display consent, no pool entry. A card only becomes sellable supply
- *     when the person explicitly said yes to being shown.
+ *  1. Ranking is permissionless, selling is not. The score itself reads only
+ *     public GitHub signal, the same surface any recruiter can already see,
+ *     so DISCOVERED profiles are ranked on the public leaderboard without
+ *     needing consent, exactly like a box score does not need a player's
+ *     permission to compute his batting average. What still requires the
+ *     person's own opt-in is being placed in the PAID, contactable pool that
+ *     skill.supply brokers, `loadPoolFromDb` below, which stays gated on
+ *     `PROFILE_DISPLAY` consent. Contact details are never surfaced at all
+ *     without separate `CONTACT` consent, on either surface.
  *  2. Players never pay and are never sold to. Nothing in this file takes money.
  */
 
@@ -242,6 +249,62 @@ export async function loadPoolFromDb(limit = 200): Promise<PoolCandidate[]> {
         isComposite: false,
         signals: r.signalSnapshots[0]!.signals as unknown as TalentSignals,
       }));
+  } catch {
+    return [];
+  }
+}
+
+export type LeaderboardRow = {
+  handle: string;
+  displayName: string;
+  headline: string | null;
+  location: string | null;
+  status: "DISCOVERED" | "CLAIMED";
+  overall: number;
+  confidence: number;
+  scoredAt: string;
+};
+
+/**
+ * Read the public leaderboard: every ranked profile, DISCOVERED or CLAIMED,
+ * scored from public signal alone. No consent required to appear here, only
+ * to be sold. See the file-level comment above. HIDDEN profiles (a real
+ * revoke) never appear, that request is honored everywhere, permissionless
+ * or not.
+ */
+export async function loadPublicLeaderboard(limit = 100): Promise<LeaderboardRow[]> {
+  const db = getPrisma();
+  if (!db) return [];
+  try {
+    const rows = await db.talentProfile.findMany({
+      where: {
+        status: { in: ["DISCOVERED", "CLAIMED"] },
+        signalSnapshots: { some: {} },
+      },
+      orderBy: { latestOverall: "desc" },
+      take: limit,
+      select: {
+        handle: true,
+        displayName: true,
+        headline: true,
+        location: true,
+        status: true,
+        latestOverall: true,
+        latestConfidence: true,
+        latestScoredAt: true,
+      },
+    });
+
+    return rows.map((r) => ({
+      handle: r.handle,
+      displayName: r.displayName ?? r.handle,
+      headline: r.headline,
+      location: r.location,
+      status: r.status as "DISCOVERED" | "CLAIMED",
+      overall: r.latestOverall ?? 0,
+      confidence: r.latestConfidence ?? 0,
+      scoredAt: (r.latestScoredAt ?? new Date(0)).toISOString(),
+    }));
   } catch {
     return [];
   }

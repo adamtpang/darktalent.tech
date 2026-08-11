@@ -36,7 +36,10 @@ finding undiscovered output as more of the world comes online) → score with
 the real engine → persist as `DISCOVERED` (unclaimed, no consent) → the
 person claims their own card (`/scout`, one click, real consent) → the
 claimed card enters the sellable pool → `/hiring` turns a pasted JD into a
-ranked shortlist against that pool.
+ranked shortlist against that pool. `/board` (2026-08-10) makes every
+scored profile, claimed or not, publicly rankable without waiting on
+consent, since ranking reads only public signal; consent still gates
+selling and contact.
 
 ## 💰 THE MODEL
 
@@ -56,11 +59,13 @@ $500 flat per JD, is the live product, Stripe-verified, the $59 archived.
   It was Adam's own considered call (his Claude subscription token cannot
   legally be wired in), but it is an unresolved tension with "free
   forever," not a solved problem.
-- **The sellable pool is thin and largely unconsented.** 2 real `CLAIMED`
-  cards, 19 real `DISCOVERED` profiles nobody has been told about yet
-  beyond one fully drafted (still unsent) invite. The $500 product is live
-  and correctly priced; the inventory behind it is not yet proven at any
-  real scale.
+- **The PAID, contactable pool is still thin.** 2 real `CLAIMED` cards, 19
+  real `DISCOVERED` profiles. Decided 2026-08-10: display no longer needs
+  consent (see the board, below), so the growth bottleneck that used to
+  require Adam sending an invite per person is gone. What is still thin,
+  because it still requires the person's own say-so, is the pool `/hiring`
+  can actually sell into. The $500 product is live and correctly priced;
+  that inventory is not yet proven at real scale.
 - **The score is not yet validated against a real outcome.** Zero
   placements exist. Every number the engine produces is a well
   instrumented opinion until one placement runs its course.
@@ -94,14 +99,17 @@ Standing rules, not to be relitigated each session:
   person against named targets.
 - Not a MOOC or a degree replacement at scale. company.university is
   narrow, demand-first tracks against a named gap, not open enrollment.
-- Not a data broker. The `DISCOVERED` vs `CLAIMED` consent split exists
-  specifically so a real person is never sold without their own say-so.
+- Not a data broker. Ranking is permissionless (public GitHub signal only,
+  the same surface any recruiter can already query), but selling and
+  contact stay gated on the person's own say-so; the `DISCOVERED` vs
+  `CLAIMED` split exists specifically so a real person is never sold or
+  contacted without consenting, even though being ranked never required it.
 - Not, yet, a capital-allocation or investor-matching platform, even
   though the same mechanism (proof over pedigree) generalizes there.
   Explicitly out of scope until the two-sided loop above has closed once,
   for real, with one real placement.
 
-## 📍 WHERE THINGS STAND (2026-08-07)
+## 📍 WHERE THINGS STAND (2026-08-10)
 
 - Card infrastructure live in production (Neon `green-forest-70890620`).
 - 2 `CLAIMED` cards (torvalds, sindresorhus, both test claims), 19
@@ -114,17 +122,37 @@ Standing rules, not to be relitigated each session:
 - `repos.yaml` kinship declared with sprite.email: it already has a real,
   consented Gmail send path darktalent's outreach step needs and does not
   have.
+- **2026-08-10: darktalent named explicitly as the NS merit-and-signal
+  identity layer**, LinkedIn's actual failure mode being that everything on
+  it is self-reported and unverifiable. Built and verified live against
+  real production data (build + local run against the real Neon DB, not a
+  mock): `/board`, a public leaderboard, all 21 scored profiles ranked, no
+  consent required to appear, and `/scout?handle=` prefill so a person who
+  recognizes their own handle lands straight on their own real audit,
+  claim button already showing. Committed to `master` this session; not
+  yet deployed, production still runs the pre-board build until Adam runs
+  `vercel deploy --prod`. This is the fix for the founder-bottleneck problem: growing the
+  visible board no longer requires Adam sending one invite at a time.
+  Cryptographic proof-of-learn credentials, company.university signing an
+  `Artifact` so it is independently verifiable rather than a trust-me
+  database boolean, are the named next layer, explicitly not started,
+  because company.university, the thing that would sign them, does not
+  exist yet.
 
 ## 📡 REALITY CHECK
 
-Everything built this session (the discovery pipeline, the claim button,
-the two invite drafts, the repos.yaml link) is directly the discover →
-score → claim → sell loop above, exercised end to end for the first time
-with real people. No drift. The one thing worth saying plainly: the
-session's energy has been on *building the pipe*, and the plan's actual
-bottleneck right now is *water in the pipe*, real consented claims, a real
-sent invite, one real placement. The next move is supply and proof, not
-more infrastructure.
+Everything built across these sessions (the discovery pipeline, the claim
+button, the invite drafts, the repos.yaml link, and now the public board)
+is directly the discover to score to claim to sell loop above, exercised
+end to end with real people. No drift, the board is a deliberate,
+discussed pivot, not scope creep: darktalent is now named explicitly as
+the NS merit-and-signal identity layer, and permissionless ranking is
+required for that to be true. What is still real and unsolved: 0 real
+consented claims, 0 real sent outreach, 0 placements. The board removes
+the founder-bottleneck excuse for that, it does not yet fix it, someone
+still has to actually find their handle and click claim, or Adam still
+has to send the one drafted invite that exists. The next move is supply
+and proof, not more infrastructure.
 
 **Draft, not yet confirmed.** Built from `ECOSYSTEM.md`, `TRIFECTA.md`,
 `OFFER.md`, and this session's verified work, not from a fresh interview.

@@ -9,13 +9,24 @@ three products was stateless, so nothing compounded.
 
 ## Rules enforced here, not trusted to callers
 
-1. **No display consent, no pool entry.** `consent.display` must be literally
-   `true` or the request is rejected. A card only becomes sellable supply when
-   the person said yes to being shown.
+1. **Ranking is permissionless, being sold is not.** `GET /board` shows every
+   scored profile, `DISCOVERED` or `CLAIMED`, no consent needed to appear,
+   because the score reads only public GitHub signal, the same surface a
+   recruiter can already see without asking. What still requires the
+   person's own `consent.display: true` through this endpoint is being
+   placed in the PAID, contactable pool `/hiring` draws from
+   (`loadPoolFromDb`). Decided 2026-08-10: darktalent is meant to work as a
+   Network School merit-and-signal identity layer, and that only works if
+   discovery is permissionless the way a box score is.
 2. **Players never pay and are never sold to.** Nothing in this path takes money.
-3. **Revocation is as easy as joining.** One DELETE, and the card is hidden and
-   every granted consent is set to REVOKED.
-4. **Raw IPs are never stored.** They are salted and hashed for the audit trail.
+3. **Revocation is as easy as joining.** One DELETE, and the card is hidden
+   from every surface, `/board` included, and every granted consent is set
+   to REVOKED. The right to leave is real even though the right to appear
+   never had to be asked for.
+4. **Contact is a separate, still-consent-gated scope.** No handle on
+   `/board` ever carries an email or a way to reach the person, claimed or
+   not; that requires `consent.contact: true` on top of display.
+5. **Raw IPs are never stored.** They are salted and hashed for the audit trail.
 
 ## POST /api/card
 
@@ -59,6 +70,16 @@ skill.supply can hide the button rather than show one that fails.
 ## DELETE /api/card?handle=ada-example
 
 Revokes all granted consents and sets the profile to HIDDEN.
+
+## GET /board (page, not API)
+
+The public leaderboard. Every `DISCOVERED` and `CLAIMED` profile with a
+signal snapshot, ranked by score, no auth and no consent check. Built in
+`src/lib/card/service.ts` as `loadPublicLeaderboard()`. This is the surface
+that makes darktalent function as a merit-based identity board rather than
+an invite-only directory: growth no longer depends on Adam emailing people
+one at a time, a person can find their own handle and self-claim from
+there via the `?handle=` link into `/scout`.
 
 ## What skill.supply needs to add (Phase 2)
 
