@@ -9,6 +9,8 @@ import { TiltCard } from "@/components/TiltCard";
 import { LEADER_ROWS } from "@/lib/rankings/model";
 import { fmtNetWorth, flagOf, tierFromOverall } from "@/lib/rankings/format";
 import { Sparkline } from "@/components/rankings/Sparkline";
+import { Reviews } from "@/components/Reviews";
+import reviewsData from "@/lib/reviews.json";
 
 const pick = (ids: string[]) => ids.map(getLegend).filter(Boolean) as Legend[];
 
@@ -58,6 +60,9 @@ export default function Home() {
               <span>◆ {LEGENDS.length} legends seeded</span>
               <span>◆ 6-stat rating engine</span>
               <span>◆ Built for the network state</span>
+            </div>
+            <div style={{ marginTop: 40, maxWidth: 480 }}>
+              <Reviews reviews={reviewsData.reviews} mailto="adamtpang@gmail.com" />
             </div>
           </div>
 
