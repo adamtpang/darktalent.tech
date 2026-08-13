@@ -135,10 +135,23 @@ function Footer() {
   );
 }
 
+const organizationJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "darktalent",
+  url: SITE,
+  description:
+    "Everyone gets a card. Scout undervalued talent, rate the legends, living and dead, and build your dream squad. Signal over pedigree.",
+};
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${display.variable} ${body.variable} ${mono.variable}`}>
       <body>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+        />
         <Nav />
         <main>{children}</main>
         <Footer />
