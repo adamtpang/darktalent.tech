@@ -1,5 +1,7 @@
 import type { CSSProperties } from "react";
+import type { Metadata } from "next";
 import Link from "next/link";
+import { SITE } from "@/lib/site";
 import { LEGENDS, getLegend } from "@/lib/cards/legends";
 import { overall, initials, ROLE_ABBR } from "@/lib/cards/rating";
 import { STAT_FULL, STAT_KEYS } from "@/lib/cards/types";
@@ -11,6 +13,13 @@ import { fmtNetWorth, flagOf, tierFromOverall } from "@/lib/rankings/format";
 import { Sparkline } from "@/components/rankings/Sparkline";
 import { Reviews } from "@/components/Reviews";
 import reviewsData from "@/lib/reviews.json";
+
+// Explicit absolute canonical for the homepage. Scoped here rather than in
+// the root layout so it doesn't get inherited by /scout, /hiring, /rankings,
+// etc. (those would each wrongly canonicalize to "/" otherwise).
+export const metadata: Metadata = {
+  alternates: { canonical: SITE },
+};
 
 const pick = (ids: string[]) => ids.map(getLegend).filter(Boolean) as Legend[];
 

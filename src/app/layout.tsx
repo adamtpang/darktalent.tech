@@ -3,6 +3,7 @@ import { Bricolage_Grotesque, Hanken_Grotesk, JetBrains_Mono } from "next/font/g
 import Link from "next/link";
 import { Analytics } from "@vercel/analytics/react";
 import { FLEET_HUB, FLEET_SISTERS } from "@/lib/fleet";
+import { SITE } from "@/lib/site";
 import "./globals.css";
 
 const display = Bricolage_Grotesque({
@@ -21,7 +22,6 @@ const mono = JetBrains_Mono({
   display: "swap",
 });
 
-const SITE = "https://darktalent.tech";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE),
@@ -138,10 +138,30 @@ function Footer() {
 const organizationJsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
+  "@id": `${SITE}/#organization`,
   name: "darktalent",
   url: SITE,
   description:
     "Everyone gets a card. Scout undervalued talent, rate the legends, living and dead, and build your dream squad. Signal over pedigree.",
+  // Real links only: darktalent's own public GitHub repo, and the founder's
+  // site (credited in the footer below). No social accounts exist for
+  // darktalent itself yet, so none are fabricated here.
+  sameAs: ["https://github.com/adamtpang/darktalent.tech", "https://adampang.com"],
+};
+
+// No sitewide URL-based search exists (the /rankings and /cards filters are
+// client-side state, not a `?q=` route), so this WebSite node intentionally
+// omits `potentialAction`/SearchAction rather than pointing at a template
+// that wouldn't actually work.
+const websiteJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": `${SITE}/#website`,
+  url: SITE,
+  name: "darktalent",
+  description:
+    "Everyone gets a card. Scout undervalued talent, rate the legends, living and dead, and build your dream squad. Signal over pedigree.",
+  publisher: { "@id": `${SITE}/#organization` },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -151,6 +171,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
         />
         <Nav />
         <main>{children}</main>
