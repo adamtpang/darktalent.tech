@@ -13,5 +13,8 @@ Versus: https://darktalent.tech/versus
 Squad: https://darktalent.tech/squad
 Cards: https://darktalent.tech/cards
 Scout: https://darktalent.tech/scout
+About: https://darktalent.tech/about
+Contact and data requests: https://darktalent.tech/contact
+Privacy policy: https://darktalent.tech/privacy
 More from adam.inc (43 products, one menu): https://adam.gives
 Built by Adam Pang: https://adampang.com

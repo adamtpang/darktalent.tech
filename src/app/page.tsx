@@ -25,10 +25,9 @@ const pick = (ids: string[]) => ids.map(getLegend).filter(Boolean) as Legend[];
 
 const heroCards = pick(["jobs", "musk", "ramanujan"]);
 const featured = pick([
-  "musk", "jobs", "ramanujan", "huang", "rockefeller", "balaji",
-  "bezos", "tesla", "buffett", "chanel", "gates", "walton",
+  "musk", "jobs", "ramanujan", "huang", "balaji", "chanel",
 ]);
-const ticker = [...LEGENDS].sort((a, b) => overall(b.stats) - overall(a.stats)).slice(0, 20);
+const ticker = [...LEGENDS].sort((a, b) => overall(b.stats) - overall(a.stats)).slice(0, 10);
 
 const STAT_DESC: Record<string, string> = {
   vis: "Sees the future before it's obvious.",
@@ -129,7 +128,7 @@ export default function Home() {
               <div className="eyebrow">Live rankings</div>
               <h2 className="h2" style={{ marginTop: 12 }}>The Forbes list, ranked by <span className="gold-text">Elo</span>.</h2>
               <p className="lead" style={{ marginTop: 12, maxWidth: 520 }}>
-                Net worth is the market cap. Elo is the game, and every head-to-head vote moves it.
+                Darktalent treats net worth as market cap and Elo as the game score. Every head-to-head vote moves the ranking, so visitors can inspect both measures instead of trusting a hidden ordering.
               </p>
             </div>
             <Link href="/rankings" className="btn btn-ghost">Full rankings →</Link>
@@ -146,7 +145,7 @@ export default function Home() {
               <span className="lb-c-country">•</span>
               <span className="lb-c-spark">30D</span>
             </div>
-            {LEADER_ROWS.slice(0, 15).map((r) => (
+            {LEADER_ROWS.slice(0, 10).map((r) => (
               <Link key={r.id} href={`/p/${r.id}`} className="lb-row">
                 <span className="lb-c-rank"><span className="lb-rank" data-top={r.rank <= 3}><i>#</i>{r.rank}</span></span>
                 <span className="lb-c-move">
@@ -183,9 +182,9 @@ export default function Home() {
 
           <div className="two-col" style={{ marginTop: 44 }}>
             {[
-              { k: "01", t: "Signal over pedigree", d: "A rating engine that scores demonstrated output and discounts the establishment markers everyone else over-weights." },
-              { k: "02", t: "Legends, living & dead", d: "The Forbes list and the Founders canon, as collectible cards. Study the greats. Then go beat them." },
-              { k: "03", t: "Build your squad", d: "Assemble your dream founding team from the talent pool. Share your card. Refer the undervalued." },
+              { k: "01", t: "Signal over pedigree", d: "The darktalent rating engine scores demonstrated output across six visible stats and discounts establishment markers. Every number includes supporting evidence, so a recruiter can inspect the reasoning instead of accepting a black-box rank." },
+              { k: "02", t: "Legends, living & dead", d: "The darktalent vault turns public figures from the Forbes list and the founders canon into collectible reference cards. Visitors can study the same six-stat model, compare builders, and challenge the ranking through head-to-head votes." },
+              { k: "03", t: "Build your squad", d: "The squad builder lets visitors assemble a five-person founding team across Vision, Build, Influence, Capital, and Grit. It calculates a team rating and chemistry score, then creates a result that can be shared." },
             ].map((c) => (
               <div className="panel" key={c.k}>
                 <div className="font-mono gold-text" style={{ fontSize: 13, fontWeight: 700 }}>{c.k}</div>
@@ -257,7 +256,7 @@ export default function Home() {
       <section className="section" style={{ paddingTop: 0 }}>
         <div className="wrap">
           <div
-            className="panel"
+            className="panel squad-teaser"
             style={{
               display: "grid",
               gridTemplateColumns: "1.1fr 0.9fr",
@@ -274,8 +273,9 @@ export default function Home() {
                 Who's on your founding five?
               </h2>
               <p className="lead" style={{ marginTop: 14, maxWidth: 460 }}>
-                Drop legends onto the pitch, Vision, Build, Influence, Capital,
-                Grit. Get a team rating and chemistry. Then share it.
+                The squad builder places legends into five roles: Vision, Build,
+                Influence, Capital, and Grit. The tool calculates a team rating
+                and chemistry score, then produces a result visitors can share.
               </p>
               <Link href="/squad" className="btn btn-gold" style={{ marginTop: 24 }}>
                 Open the squad builder →
@@ -283,7 +283,7 @@ export default function Home() {
             </div>
             <div style={{ display: "flex", gap: 14, justifyContent: "center" }}>
               {pick(["jobs", "musk"]).map((l) => (
-                <div key={l.id} style={{ width: 150 }}>
+                <div key={l.id} className="squad-card" style={{ width: 150 }}>
                   <TiltCard>
                     <PlayerCard legend={l} />
                   </TiltCard>

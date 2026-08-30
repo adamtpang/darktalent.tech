@@ -106,11 +106,14 @@ function Footer() {
             Moneyball for tech & business. The 1729 in the rough.
           </p>
         </div>
-        <div style={{ display: "flex", gap: 28, fontSize: 13, color: "var(--ink-dim)" }}>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 22, fontSize: 13, color: "var(--ink-dim)" }}>
           <Link href="/hiring">Hire</Link>
           <Link href="/scout">Scout</Link>
           <Link href="/board">Board</Link>
           <Link href="/cards">Legends</Link>
+          <Link href="/about">About</Link>
+          <Link href="/contact">Contact</Link>
+          <Link href="/privacy">Privacy</Link>
           <a href="https://ns.com" target="_blank" rel="noreferrer">Network School ↗</a>
         </div>
       </div>

@@ -8,7 +8,7 @@ export function PlayerCard({ legend }: { legend: Legend }) {
   const t = tier(legend);
 
   return (
-    <article className={`dt-card tier-${t}`}>
+    <div className={`dt-card tier-${t}`}>
       <div className="dt-card__inner">
         <header className="dt-card__top">
           <div className="dt-card__rating">
@@ -49,6 +49,6 @@ export function PlayerCard({ legend }: { legend: Legend }) {
         </div>
       </div>
       <div className="dt-card__holo" aria-hidden="true" />
-    </article>
+    </div>
   );
 }
