@@ -82,7 +82,7 @@ function Nav() {
           <Link href="/board" className="chip nav-hide-sm">Board</Link>
           <Link href="/duel" className="chip nav-hide-sm">Duel</Link>
           <Link href="/rankings" className="chip nav-hide-sm">Rankings</Link>
-          <Link href="/hiring" className="btn btn-gold" style={{ padding: "9px 16px" }}>
+          <Link href="/hiring" className="btn btn-ghost" style={{ padding: "9px 16px" }}>
             Hire
           </Link>
         </div>

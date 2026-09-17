@@ -685,3 +685,7 @@ a { color: inherit; text-decoration: none; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
   html { scroll-behavior: auto; }
 }
+
+/* E19: the one quiet secondary path under a primary action */
+.quiet-link { display: inline-flex; align-items: center; min-height: 44px; color: var(--ink-dim); font-size: 14px; text-decoration: underline; text-underline-offset: 4px; }
+.quiet-link:hover { color: var(--ink); }

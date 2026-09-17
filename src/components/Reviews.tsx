@@ -1,5 +1,5 @@
 /**
- * Reviews — the empty-until-real evidence slot, React/Tailwind version.
+ * Reviews: the empty-until-real evidence slot, React/Tailwind version.
  * See README.md in this folder. Never seed this with fake reviews.
  *
  * Usage: <Reviews reviews={reviewsJson.reviews} mailto="you@example.com" />
@@ -26,7 +26,7 @@ export function Reviews({ reviews, mailto }: ReviewsProps) {
       </h2>
       {reviews.length === 0 ? (
         <div className="rounded-lg border border-dashed border-border p-6 text-sm text-muted-foreground">
-          No reviews yet. Be the first —{" "}
+          No reviews yet. Be the first:{" "}
           {mailto ? (
             <a href={`mailto:${mailto}?subject=A review for you`} className="text-primary underline underline-offset-2">
               tell us how it went
