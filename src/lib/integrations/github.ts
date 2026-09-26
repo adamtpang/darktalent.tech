@@ -23,6 +23,14 @@ export interface GitHubIngestOptions {
   now?: Date;
   /** Cap on repos to scan for language/craft stats. */
   maxRepos?: number;
+  /**
+   * Backtest mode: score the person as they looked on this date. Commit
+   * windows, account age, repos, PRs, reviews, and issues are all cut off at
+   * this date. Stars, forks, and followers only exist as today's totals, so
+   * they would leak the future; in this mode they are zeroed for everyone,
+   * which keeps founders, joiners, and controls on equal footing.
+   */
+  asOf?: Date;
 }
 
 export async function fetchGitHubSignals(
@@ -32,7 +40,9 @@ export async function fetchGitHubSignals(
   const octokit = new Octokit({
     auth: opts.token ?? process.env.GITHUB_TOKEN,
   });
-  const now = opts.now ?? new Date();
+  const now = opts.asOf ?? opts.now ?? new Date();
+  const asOf = opts.asOf;
+  const before = asOf ? ` created:<${asOf.toISOString().slice(0, 10)}` : "";
   const maxRepos = opts.maxRepos ?? 100;
 
   const { data: user } = await octokit.users.getByUsername({ username: handle });
@@ -45,11 +55,14 @@ export async function fetchGitHubSignals(
     sort: "pushed",
   });
 
-  const owned = repos.slice(0, maxRepos);
+  const owned = (asOf
+    ? repos.filter((r) => r.created_at && new Date(r.created_at) < asOf)
+    : repos
+  ).slice(0, maxRepos);
   const original = owned.filter((r) => !r.fork);
 
-  const totalStars = original.reduce((s, r) => s + (r.stargazers_count ?? 0), 0);
-  const totalForks = original.reduce((s, r) => s + (r.forks_count ?? 0), 0);
+  const totalStars = asOf ? 0 : original.reduce((s, r) => s + (r.stargazers_count ?? 0), 0);
+  const totalForks = asOf ? 0 : original.reduce((s, r) => s + (r.forks_count ?? 0), 0);
 
   // Language histogram from each repo's primary language (cheap, no extra call).
   const langWeights = new Map<string, number>();
@@ -80,9 +93,9 @@ export async function fetchGitHubSignals(
     await Promise.all([
       countSearch(octokit, "commits", `author:${handle} committer-date:${last12}`),
       countSearch(octokit, "commits", `author:${handle} committer-date:${prev12}`),
-      countSearch(octokit, "issues", `type:pr author:${handle} is:merged`),
-      countSearch(octokit, "issues", `type:pr reviewed-by:${handle}`),
-      countSearch(octokit, "issues", `type:issue assignee:${handle} is:closed`),
+      countSearch(octokit, "issues", `type:pr author:${handle} is:merged${before}`),
+      countSearch(octokit, "issues", `type:pr reviewed-by:${handle}${before}`),
+      countSearch(octokit, "issues", `type:issue assignee:${handle} is:closed${before}`),
     ]);
 
   const accountAgeYears = user.created_at
@@ -94,9 +107,9 @@ export async function fetchGitHubSignals(
     sources: ["github"],
     account: {
       accountAgeYears: round(accountAgeYears, 2),
-      publicRepos: user.public_repos ?? owned.length,
-      followers: user.followers ?? 0,
-      following: user.following ?? 0,
+      publicRepos: asOf ? owned.length : (user.public_repos ?? owned.length),
+      followers: asOf ? 0 : (user.followers ?? 0),
+      following: asOf ? 0 : (user.following ?? 0),
     },
     output: {
       totalStars,
