@@ -32,7 +32,8 @@ export function Leaderboard({ rows }: { rows: LeaderRow[] }) {
   function toggleDomain(d: string) {
     setDomains((prev) => {
       const next = new Set(prev);
-      next.has(d) ? next.delete(d) : next.add(d);
+      if (next.has(d)) next.delete(d);
+      else next.add(d);
       return next;
     });
   }

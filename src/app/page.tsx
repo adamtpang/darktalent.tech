@@ -1,10 +1,16 @@
+import type { CSSProperties } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { SITE } from "@/lib/site";
-import { getLegend } from "@/lib/cards/legends";
+import { LEGENDS, getLegend } from "@/lib/cards/legends";
+import { overall, initials, ROLE_ABBR } from "@/lib/cards/rating";
+import { STAT_FULL, STAT_KEYS } from "@/lib/cards/types";
 import type { Legend } from "@/lib/cards/types";
 import { PlayerCard } from "@/components/PlayerCard";
 import { TiltCard } from "@/components/TiltCard";
+import { LEADER_ROWS } from "@/lib/rankings/model";
+import { fmtNetWorth, flagOf, tierFromOverall } from "@/lib/rankings/format";
+import { Sparkline } from "@/components/rankings/Sparkline";
 import { Reviews } from "@/components/Reviews";
 import reviewsData from "@/lib/reviews.json";
 
@@ -15,43 +21,53 @@ export const metadata: Metadata = {
   alternates: { canonical: SITE },
 };
 
-// E19 perfection pass, 2026-09-17. The page had 993 visible words, 38 links
-// and buttons, three hero buttons, a marquee, a 15-row table, three panels,
-// a 12-card wall, a six-cell stats grid and two more boxed calls to action.
-// One headline, one sentence, one action, three still cards, one thesis line,
-// one card offer, one row of links. Everything deleted still exists on its own
-// route (/rankings, /cards, /squad, /scout).
-
 const pick = (ids: string[]) => ids.map(getLegend).filter(Boolean) as Legend[];
+
 const heroCards = pick(["jobs", "musk", "ramanujan"]);
-const HERO_LAYOUT = [
-  { left: "34%", top: "2%", z: 3, rot: "-7deg", w: 230 },
-  { left: "2%", top: "20%", z: 2, rot: "-2deg", w: 205 },
-  { left: "60%", top: "26%", z: 1, rot: "8deg", w: 205 },
-];
+const featured = pick([
+  "musk", "jobs", "ramanujan", "huang", "balaji", "chanel",
+]);
+const ticker = [...LEGENDS].sort((a, b) => overall(b.stats) - overall(a.stats)).slice(0, 10);
+
+const STAT_DESC: Record<string, string> = {
+  vis: "Sees the future before it's obvious.",
+  exe: "Ships. Relentlessly. Against odds.",
+  inf: "Bends people, markets, and culture.",
+  ino: "Creates what didn't exist.",
+  cap: "Value created and captured.",
+  grt: "Survives the valley of death.",
+};
 
 export default function Home() {
   return (
     <>
-      <section className="section" style={{ paddingTop: 72, paddingBottom: 72 }}>
+      {/* ───────── HERO ───────── */}
+      <section className="section" style={{ paddingTop: 72, paddingBottom: 64 }}>
         <div className="wrap hero-grid">
-          <div>
-            <h1 className="h-title">
+          <div className="rise">
+            <div className="eyebrow">The hiring side of skill.supply</div>
+            <h1 className="h-title" style={{ marginTop: 18 }}>
               Hire the <span className="gold-text">1729</span> hiding in plain sight.
             </h1>
             <p className="lead" style={{ marginTop: 22, maxWidth: 480 }}>
-              Paste a real req. Get five scored candidates for that seat, with the evidence behind every number.
+              <a href="https://skill.supply" target="_blank" rel="noreferrer" style={{ color: "var(--signal)" }}>skill.supply</a>{" "}
+              makes the supply irresistible, free for seekers forever. darktalent is the other
+              half: paste a real req and get{" "}
+              <strong style={{ color: "var(--ink)" }}>five scored candidates matched to that seat</strong>,
+              with the evidence behind every number. Signal over pedigree.
             </p>
-            <div style={{ display: "grid", justifyItems: "start", gap: 8, marginTop: 30 }}>
-              <Link href="/hiring" className="btn btn-gold" style={{ minHeight: 48 }}>Build a shortlist</Link>
-              <a
-                href="https://buy.stripe.com/dRmaEX9340OhcME6KtaMU1F"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="quiet-link"
-              >
-                Buy a shortlist, $500
-              </a>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginTop: 30 }}>
+              <Link href="/hiring" className="btn btn-gold">Build a shortlist →</Link>
+              <Link href="/scout" className="btn btn-ghost">Get your card</Link>
+              <a href="https://buy.stripe.com/dRmaEX9340OhcME6KtaMU1F" target="_blank" rel="noopener noreferrer" className="btn btn-ghost">Buy a shortlist, $500 →</a>
+            </div>
+            <div
+              className="font-mono"
+              style={{ marginTop: 26, color: "var(--ink-faint)", fontSize: 12, display: "flex", gap: 18, flexWrap: "wrap" }}
+            >
+              <span>◆ {LEGENDS.length} legends seeded</span>
+              <span>◆ 6-stat rating engine</span>
+              <span>◆ Built for the network state</span>
             </div>
             <div style={{ marginTop: 40, maxWidth: 480 }}>
               <Reviews reviews={reviewsData.reviews} mailto="adamtpang@gmail.com" />
@@ -60,22 +76,30 @@ export default function Home() {
 
           <div className="hero-cards">
             {heroCards.map((l, i) => {
-              const layout = HERO_LAYOUT[i]!;
+              const layout = [
+                { left: "34%", top: "2%", z: 3, rot: "-7deg", w: 230, delay: 0 },
+                { left: "2%", top: "20%", z: 2, rot: "-2deg", w: 205, delay: 0.6 },
+                { left: "60%", top: "26%", z: 1, rot: "8deg", w: 205, delay: 1.2 },
+              ][i]!;
               return (
                 <div
                   key={l.id}
+                  className="floaty"
                   style={{
                     position: "absolute",
                     left: layout.left,
                     top: layout.top,
                     width: layout.w,
                     zIndex: layout.z,
-                    transform: `rotate(${layout.rot})`,
-                  }}
+                    ["--rot" as string]: layout.rot,
+                    animationDelay: `${layout.delay}s`,
+                  } as CSSProperties}
                 >
-                  <TiltCard>
-                    <PlayerCard legend={l} />
-                  </TiltCard>
+                  <div style={{ transform: `rotate(${layout.rot})` }}>
+                    <TiltCard>
+                      <PlayerCard legend={l} />
+                    </TiltCard>
+                  </div>
                 </div>
               );
             })}
@@ -83,40 +107,227 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="section" style={{ paddingTop: 0 }}>
-        <div className="wrap">
-          <h2 className="h2" style={{ maxWidth: 720 }}>
-            Talent is everywhere. Opportunity isn't.
-          </h2>
-          <p className="lead" style={{ marginTop: 16, maxWidth: 640 }}>
-            Legacy filters reward pedigree. The engine scores what a person has actually built.
-          </p>
+      {/* ───────── TICKER ───────── */}
+      <div className="marquee">
+        <div className="marquee__row">
+          {[...ticker, ...ticker].map((l, i) => (
+            <span className="marquee__item" key={`${l.id}-${i}`}>
+              <b>{overall(l.stats)}</b> {l.surname}
+              <span style={{ color: "var(--ink-faint)" }}>·</span>
+              <span style={{ color: "var(--ink-faint)" }}>{l.company ?? l.domain}</span>
+            </span>
+          ))}
         </div>
-      </section>
+      </div>
 
-      <section className="section" id="card" style={{ paddingTop: 0 }}>
+      {/* ───────── LIVE RANKINGS ───────── */}
+      <section className="section" style={{ paddingTop: 72 }}>
         <div className="wrap">
-          <div style={{ borderTop: "1px solid var(--line)", paddingTop: 40 }}>
-            <h2 className="h2">
-              Get your <span className="gold-text">card.</span>
-            </h2>
-            <p className="lead" style={{ marginTop: 14, maxWidth: 520 }}>
-              Enter a GitHub handle. The engine reads its real signal and you get an archetype card to post.
-            </p>
-            <Link href="/scout" className="btn btn-ghost" style={{ marginTop: 24 }}>
-              Get your card
-            </Link>
+          <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: 14, marginBottom: 26 }}>
+            <div>
+              <div className="eyebrow">Live rankings</div>
+              <h2 className="h2" style={{ marginTop: 12 }}>The Forbes list, ranked by <span className="gold-text">Elo</span>.</h2>
+              <p className="lead" style={{ marginTop: 12, maxWidth: 520 }}>
+                Darktalent treats net worth as market cap and Elo as the game score. Every head-to-head vote moves the ranking, so visitors can inspect both measures instead of trusting a hidden ordering.
+              </p>
+            </div>
+            <Link href="/rankings" className="btn btn-ghost">Full rankings →</Link>
+          </div>
+
+          <div className="lb">
+            <div className="lb-head">
+              <span className="lb-c-rank">#</span>
+              <span className="lb-c-move">7D</span>
+              <span className="lb-c-builder">Builder</span>
+              <span className="lb-c-elo">Elo</span>
+              <span className="lb-c-worth">Net worth</span>
+              <span className="lb-c-domain">Domain</span>
+              <span className="lb-c-country">•</span>
+              <span className="lb-c-spark">30D</span>
+            </div>
+            {LEADER_ROWS.slice(0, 10).map((r) => (
+              <Link key={r.id} href={`/p/${r.id}`} className="lb-row">
+                <span className="lb-c-rank"><span className="lb-rank" data-top={r.rank <= 3}><i>#</i>{r.rank}</span></span>
+                <span className="lb-c-move">
+                  {r.move > 0 ? <span className="lb-up">▲{r.move}</span> : r.move < 0 ? <span className="lb-down">▼{-r.move}</span> : <span className="lb-flat">-</span>}
+                </span>
+                <span className="lb-c-builder">
+                  <span className="lb-mono" data-tier={tierFromOverall(r.overall)}>{initials(r.name)}</span>
+                  <span className="lb-name"><b>{r.surname}</b><em>{ROLE_ABBR[r.role]} · {r.industry}</em></span>
+                </span>
+                <span className="lb-c-elo lb-elo">{r.elo}</span>
+                <span className="lb-c-worth lb-worth">{fmtNetWorth(r.netWorthB)}</span>
+                <span className="lb-c-domain lb-domain"><i data-domain={r.domain} />{r.domain}</span>
+                <span className="lb-c-country">{flagOf(r.country)}</span>
+                <span className="lb-c-spark"><Sparkline values={r.spark} /></span>
+              </Link>
+            ))}
           </div>
         </div>
       </section>
 
+      {/* ───────── THESIS ───────── */}
+      <section className="section">
+        <div className="wrap">
+          <div className="eyebrow">The thesis</div>
+          <h2 className="h2" style={{ marginTop: 14, maxWidth: 720 }}>
+            Talent is everywhere. Opportunity isn't.
+          </h2>
+          <p className="lead" style={{ marginTop: 16, maxWidth: 640 }}>
+            Legacy filters reward pedigree, the right school, the right logo. We
+            reward signal: what you've actually built. Ramanujan had no
+            credentials and the notebook of a century. The market underpriced
+            him. We exist to close that gap.
+          </p>
+
+          <div className="two-col" style={{ marginTop: 44 }}>
+            {[
+              { k: "01", t: "Signal over pedigree", d: "The darktalent rating engine scores demonstrated output across six visible stats and discounts establishment markers. Every number includes supporting evidence, so a recruiter can inspect the reasoning instead of accepting a black-box rank." },
+              { k: "02", t: "Legends, living & dead", d: "The darktalent vault turns public figures from the Forbes list and the founders canon into collectible reference cards. Visitors can study the same six-stat model, compare builders, and challenge the ranking through head-to-head votes." },
+              { k: "03", t: "Build your squad", d: "The squad builder lets visitors assemble a five-person founding team across Vision, Build, Influence, Capital, and Grit. It calculates a team rating and chemistry score, then creates a result that can be shared." },
+            ].map((c) => (
+              <div className="panel" key={c.k}>
+                <div className="font-mono gold-text" style={{ fontSize: 13, fontWeight: 700 }}>{c.k}</div>
+                <h3 className="font-display" style={{ fontWeight: 800, fontSize: 22, marginTop: 14, letterSpacing: "-0.02em" }}>
+                  {c.t}
+                </h3>
+                <p style={{ color: "var(--ink-dim)", marginTop: 10, fontSize: 15 }}>{c.d}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ───────── FEATURED WALL ───────── */}
+      <section className="section" style={{ paddingTop: 24 }}>
+        <div className="wrap">
+          <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: 14, marginBottom: 34 }}>
+            <div>
+              <div className="eyebrow">The vault</div>
+              <h2 className="h2" style={{ marginTop: 12 }}>Featured legends</h2>
+            </div>
+            <Link href="/cards" className="btn btn-ghost">See all {LEGENDS.length} →</Link>
+          </div>
+          <div className="card-grid">
+            {featured.map((l, i) => (
+              <div key={l.id} className="rise" style={{ animationDelay: `${Math.min(i * 40, 480)}ms` }}>
+                <TiltCard>
+                  <PlayerCard legend={l} />
+                </TiltCard>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ───────── STATS ───────── */}
+      <section className="section">
+        <div className="wrap">
+          <div className="eyebrow">The rating engine</div>
+          <h2 className="h2" style={{ marginTop: 14, maxWidth: 680 }}>
+            Six stats. One number. Zero pedigree bias.
+          </h2>
+          <div
+            style={{
+              marginTop: 40,
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
+              gap: 1,
+              background: "var(--line)",
+              border: "1px solid var(--line)",
+              borderRadius: 14,
+              overflow: "hidden",
+            }}
+          >
+            {STAT_KEYS.map((k) => (
+              <div key={k} style={{ background: "var(--bg)", padding: "26px 22px" }}>
+                <div className="font-display gold-text" style={{ fontWeight: 800, fontSize: 30, letterSpacing: "-0.03em" }}>
+                  {k.toUpperCase()}
+                </div>
+                <div style={{ fontWeight: 600, marginTop: 8 }}>{STAT_FULL[k]}</div>
+                <p style={{ color: "var(--ink-dim)", fontSize: 14, marginTop: 6 }}>{STAT_DESC[k]}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ───────── SQUAD TEASER ───────── */}
       <section className="section" style={{ paddingTop: 0 }}>
         <div className="wrap">
-          <nav aria-label="More" className="font-mono" style={{ display: "flex", flexWrap: "wrap", gap: "8px 24px", fontSize: 13 }}>
-            <Link href="/rankings" className="quiet-link">Live rankings</Link>
-            <Link href="/cards" className="quiet-link">All legends</Link>
-            <Link href="/squad" className="quiet-link">Squad builder</Link>
-          </nav>
+          <div
+            className="panel squad-teaser"
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1.1fr 0.9fr",
+              gap: 30,
+              alignItems: "center",
+              padding: "40px 36px",
+              background:
+                "radial-gradient(120% 120% at 100% 0%, rgba(94,234,212,0.08), transparent 55%), rgba(255,255,255,0.018)",
+            }}
+          >
+            <div>
+              <div className="eyebrow" style={{ color: "var(--signal)" }}>Squad builder</div>
+              <h2 className="h2" style={{ marginTop: 14 }}>
+                Who's on your founding five?
+              </h2>
+              <p className="lead" style={{ marginTop: 14, maxWidth: 460 }}>
+                The squad builder places legends into five roles: Vision, Build,
+                Influence, Capital, and Grit. The tool calculates a team rating
+                and chemistry score, then produces a result visitors can share.
+              </p>
+              <Link href="/squad" className="btn btn-gold" style={{ marginTop: 24 }}>
+                Open the squad builder →
+              </Link>
+            </div>
+            <div style={{ display: "flex", gap: 14, justifyContent: "center" }}>
+              {pick(["jobs", "musk"]).map((l) => (
+                <div key={l.id} className="squad-card" style={{ width: 150 }}>
+                  <TiltCard>
+                    <PlayerCard legend={l} />
+                  </TiltCard>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ───────── GET YOUR CARD / NS ───────── */}
+      <section className="section" id="card" style={{ paddingTop: 0 }}>
+        <div className="wrap">
+          <div
+            style={{
+              textAlign: "center",
+              border: "1px solid var(--line-2)",
+              borderRadius: 18,
+              padding: "64px 28px",
+              background:
+                "radial-gradient(100% 140% at 50% 0%, rgba(231,194,76,0.12), transparent 60%)",
+            }}
+          >
+            <div className="eyebrow">Claim your spot</div>
+            <h2 className="h-title" style={{ fontSize: "clamp(34px, 6vw, 64px)", marginTop: 16 }}>
+              Get your <span className="gold-text">card.</span>
+            </h2>
+            <p className="lead" style={{ margin: "18px auto 0", maxWidth: 520 }}>
+              Enter a GitHub handle and the engine reads its real signal, you get an
+              archetype card to post and a private audit only you unlock. Then refer
+              undervalued talent into the network state and level up together.
+            </p>
+            <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap", marginTop: 30 }}>
+              <Link href="/scout" className="btn btn-gold">
+                Get your card →
+              </Link>
+              <a href="https://ns.com" target="_blank" rel="noreferrer" className="btn btn-ghost">
+                Join via Network School ↗
+              </a>
+            </div>
+            <p className="font-mono" style={{ color: "var(--ink-faint)", fontSize: 11, marginTop: 22 }}>
+              Live now, audited from your public GitHub · your data, your consent
+            </p>
+          </div>
         </div>
       </section>
     </>

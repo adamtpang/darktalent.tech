@@ -6,7 +6,6 @@ import {
   getBuilder,
   nearby,
   domainRankOf,
-  countryRankOf,
   toLegend,
   fmtNetWorth,
 } from "@/lib/rankings/model";
@@ -39,7 +38,6 @@ export default async function BuilderPage({ params }: { params: Promise<{ id: st
   if (!b) notFound();
 
   const dRank = domainRankOf(b);
-  const cRank = countryRankOf(b);
   const prev = RANKED[b.rank - 2]; // one rank above
   const next = RANKED[b.rank]; // one rank below
   const near = nearby(b, 2);
