@@ -20,8 +20,10 @@ const args = Object.fromEntries(
 );
 const limit = args.limit ? Number(args.limit) : Infinity;
 const role = args.role;
+const input = args.input ?? "data/backtest/core_maintainers.csv";
+const output = args.out ?? "data/backtest/scores_asof.csv";
 
-const rows = readFileSync("data/backtest/core_maintainers.csv", "utf8")
+const rows = readFileSync(input, "utf8")
   .trim()
   .split(/\r?\n/)
   .slice(1)
@@ -33,7 +35,7 @@ const rows = readFileSync("data/backtest/core_maintainers.csv", "utf8")
 const out = ["repo,login,role,as_of,overall,confidence,technical,trajectory,darkSignal,influence,commits_12mo,commits_prev12mo,merged_prs,reviews,original_repos"];
 
 for (const r of rows) {
-  const asOf = new Date(r.first);
+  const asOf = new Date(r.first!);
   asOf.setFullYear(asOf.getFullYear() - 1);
   try {
     const s = await fetchGitHubSignals(r.login, { asOf });
@@ -53,4 +55,4 @@ for (const r of rows) {
   await new Promise((res) => setTimeout(res, 3000));
 }
 
-writeFileSync("data/backtest/scores_asof.csv", out.join("\n") + "\n");
+writeFileSync(output, out.join("\n") + "\n");
