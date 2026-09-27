@@ -16,7 +16,9 @@ function load(path: string) {
 }
 
 const joiners = load("data/backtest/scores_asof.csv");
-const controls = load("data/backtest/scores_control.csv");
+const controlFile = process.argv.find((a) => a.startsWith("--controls="))?.slice(11) ?? "data/backtest/scores_control.csv";
+const controls = load(controlFile);
+console.log(`controls from ${controlFile}`);
 
 const metrics = [
   "overall", "technical", "trajectory", "darkSignal", "influence",
