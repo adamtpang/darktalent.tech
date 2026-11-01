@@ -125,10 +125,10 @@ export default function Home() {
         <div className="wrap">
           <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: 14, marginBottom: 26 }}>
             <div>
-              <div className="eyebrow">Live rankings</div>
+              <div className="eyebrow">The rankings game</div>
               <h2 className="h2" style={{ marginTop: 12 }}>The Forbes list, ranked by <span className="gold-text">Elo</span>.</h2>
               <p className="lead" style={{ marginTop: 12, maxWidth: 520 }}>
-                Darktalent treats net worth as market cap and Elo as the game score. Every head-to-head vote moves the ranking, so visitors can inspect both measures instead of trusting a hidden ordering.
+                A game, not a ledger: each legend's Elo is seeded from net worth and an editorial rating, with simulated movement. Head-to-head votes count on your device only and do not move the shared ranking yet.
               </p>
             </div>
             <Link href="/rankings" className="btn btn-ghost">Full rankings →</Link>
@@ -225,7 +225,7 @@ export default function Home() {
         <div className="wrap">
           <div className="eyebrow">The rating engine</div>
           <h2 className="h2" style={{ marginTop: 14, maxWidth: 680 }}>
-            Six stats. One number. Zero pedigree bias.
+            Six stats. One number. Pedigree counts as a discount, not a credit.
           </h2>
           <div
             style={{
