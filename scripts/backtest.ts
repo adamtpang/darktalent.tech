@@ -28,14 +28,14 @@ const rows = readFileSync(input, "utf8")
   .split(/\r?\n/)
   .slice(1)
   .map((l) => l.split(","))
-  .map(([repo, login, commits, first, created, days, r]) => ({ repo, login, first, role: r }))
+  .map((c) => ({ repo: c[0]!, login: c[1]!, first: c[3]!, role: c[6]! }))
   .filter((r) => r.first && (!role || r.role === role))
   .slice(0, limit);
 
 const out = ["repo,login,role,as_of,overall,confidence,technical,trajectory,darkSignal,influence,commits_12mo,commits_prev12mo,merged_prs,reviews,original_repos"];
 
 for (const r of rows) {
-  const asOf = new Date(r.first!);
+  const asOf = new Date(r.first);
   asOf.setFullYear(asOf.getFullYear() - 1);
   try {
     const s = await fetchGitHubSignals(r.login, { asOf });

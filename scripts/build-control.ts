@@ -22,11 +22,11 @@ const DAY = 864e5;
 
 const joiners = readFileSync("data/backtest/core_maintainers.csv", "utf8")
   .trim().split(/\r?\n/).slice(1).map((l) => l.split(","))
-  .map(([repo, login, commits, first, created, , role]) => ({ repo, login, first, created, role }))
+  .map((c) => ({ repo: c[0]!, login: c[1]!, first: c[3]!, created: c[4]!, role: c[6]! }))
   .filter((r) => r.role === "late_joiner" && r.first);
 
 const coreLogins = new Set(
-  readFileSync("data/backtest/core_maintainers.csv", "utf8").trim().split(/\r?\n/).slice(1).map((l) => l.split(",")[1]),
+  readFileSync("data/backtest/core_maintainers.csv", "utf8").trim().split(/\r?\n/).slice(1).map((l) => l.split(",")[1]!),
 );
 
 /** First commit date of `login` to `repo`, via the last page of the commits list. */
@@ -43,7 +43,7 @@ const out = ["repo,login,commits,first_commit,repo_created,days_after_creation,r
 const used = new Set<string>();
 
 for (const repoName of [...new Set(joiners.map((j) => j.repo))]) {
-  const [owner, repo] = repoName.split("/");
+  const [owner, repo] = repoName.split("/") as [string, string];
   // Contributors ranked roughly 16 to 115: showed up, stayed peripheral.
   const pool: { login: string; contributions: number; first?: string | null }[] = [];
   for (const page of [1, 2, 3, 4]) {
