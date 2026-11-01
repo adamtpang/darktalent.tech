@@ -64,3 +64,20 @@ describe("scoreTalent", () => {
     expect(a.overall).not.toBe(b.overall);
   });
 });
+
+describe("commit inflation", () => {
+  const out = (last: number, prev: number) =>
+    baseSignals({
+      output: { ...baseSignals().output, commitsLast12mo: last, commitsPrev12mo: prev },
+    });
+  const velocity = (s: ReturnType<typeof baseSignals>) =>
+    scoreTalent(s).pillars.find((p) => p.key === "trajectory")!.factors[0]!.points;
+
+  it("a mirror repo jump (4,923 to 41,979) does not read as human acceleration", () => {
+    expect(velocity(out(41979, 4923))).toBeLessThan(velocity(out(5000, 5000)) + 1);
+  });
+
+  it("real growth under the human ceiling still scores higher than flat", () => {
+    expect(velocity(out(1200, 400))).toBeGreaterThan(velocity(out(400, 400)));
+  });
+});
