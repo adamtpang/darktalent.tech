@@ -5,6 +5,7 @@ import { FLEET_HUB, FLEET_SISTERS } from "@/lib/fleet";
 import { SITE } from "@/lib/site";
 import "./globals.css";
 import Script from "next/script";
+import { TrackClicks } from "@/components/TrackClicks";
 
 const display = Bricolage_Grotesque({
   subsets: ["latin"],
@@ -183,6 +184,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Nav />
         <main>{children}</main>
         <Footer />
+      <TrackClicks />
       </body>
     </html>
   );

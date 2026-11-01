@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { claimCard } from "@/app/scout/actions";
+import { track } from "@/lib/track";
 
 /**
  * The self-serve claim button on your own /scout lookup. This is the missing
@@ -23,6 +24,7 @@ export function ClaimCard({ handle }: { handle: string }) {
     if (res.ok) {
       setOverall(res.overall);
       setStatus("done");
+      track("card_claimed", { contact });
     } else {
       setError(res.error);
       setStatus("error");
