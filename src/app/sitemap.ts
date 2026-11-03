@@ -1,5 +1,25 @@
-import type { MetadataRoute } from 'next'
-const BASE = 'https://darktalent.tech'
+import type { MetadataRoute } from "next";
+import { SITE } from "@/lib/site";
+
+const ROUTES = [
+  "",
+  "/about",
+  "/contact",
+  "/privacy",
+  "/hiring",
+  "/scout",
+  "/rankings",
+  "/cards",
+  "/squad",
+  "/board",
+  "/duel",
+  "/versus",
+];
+
 export default function sitemap(): MetadataRoute.Sitemap {
-  return [{ url: BASE, lastModified: new Date(), changeFrequency: 'weekly', priority: 1 }]
+  return ROUTES.map((path) => ({
+    url: `${SITE}${path}`,
+    changeFrequency: "weekly",
+    priority: path === "" ? 1 : 0.7,
+  }));
 }

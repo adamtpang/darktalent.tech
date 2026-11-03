@@ -13,7 +13,7 @@ const clamp01 = (x: number): number => Math.min(1, Math.max(0, x));
 const NW_REF = 400;
 
 /**
- * Deterministic seed rating from net worth + a 0–100 stat overall.
+ * Deterministic seed rating from net worth + a 0 to 100 stat overall.
  * Log-scaled on net worth (so $400B doesn't crush $2B to the floor), blended
  * 70% money / 30% signal, into ~[1400, 2150]. Monotonic in both inputs.
  */

@@ -72,7 +72,7 @@ const UPSKILL: Record<keyof CardStats, { slot: SlotId; title: string; action: st
   vis: {
     slot: "VISION",
     title: "Thin field-of-view",
-    action: "Review 3–4 external PRs a week in your ecosystem, it builds the strategic surface raw output lacks.",
+    action: "Review 3 to 4 external PRs a week in your ecosystem, it builds the strategic surface raw output lacks.",
   },
   cap: {
     slot: "CAPITAL",

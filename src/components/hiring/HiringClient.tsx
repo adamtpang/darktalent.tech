@@ -4,6 +4,7 @@ import { useState } from "react";
 import { runShortlist } from "@/app/hiring/actions";
 import type { Shortlist } from "@/lib/shortlist/types";
 import { ShortlistView } from "./ShortlistView";
+import { track } from "@/lib/track";
 
 const SAMPLE_JD = `Senior Infrastructure Engineer
 
@@ -24,7 +25,10 @@ export function HiringClient({ initial }: { initial: Shortlist }) {
     setError(null);
     const res = await runShortlist(text);
     setLoading(false);
-    if (res.ok) setShortlist(res.shortlist);
+    if (res.ok) {
+      setShortlist(res.shortlist);
+      track("shortlist_built", { chars: text.length });
+    }
     else setError(res.error);
   }
 

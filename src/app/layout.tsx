@@ -5,6 +5,7 @@ import { FLEET_HUB, FLEET_SISTERS } from "@/lib/fleet";
 import { SITE } from "@/lib/site";
 import "./globals.css";
 import Script from "next/script";
+import { TrackClicks } from "@/components/TrackClicks";
 
 const display = Bricolage_Grotesque({
   subsets: ["latin"],
@@ -82,7 +83,7 @@ function Nav() {
           <Link href="/board" className="chip nav-hide-sm">Board</Link>
           <Link href="/duel" className="chip nav-hide-sm">Duel</Link>
           <Link href="/rankings" className="chip nav-hide-sm">Rankings</Link>
-          <Link href="/hiring" className="btn btn-gold" style={{ padding: "9px 16px" }}>
+          <Link href="/hiring" className="btn btn-ghost" style={{ padding: "9px 16px" }}>
             Hire
           </Link>
         </div>
@@ -106,11 +107,14 @@ function Footer() {
             Moneyball for tech & business. The 1729 in the rough.
           </p>
         </div>
-        <div style={{ display: "flex", gap: 28, fontSize: 13, color: "var(--ink-dim)" }}>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 22, fontSize: 13, color: "var(--ink-dim)" }}>
           <Link href="/hiring">Hire</Link>
           <Link href="/scout">Scout</Link>
           <Link href="/board">Board</Link>
           <Link href="/cards">Legends</Link>
+          <Link href="/about">About</Link>
+          <Link href="/contact">Contact</Link>
+          <Link href="/privacy">Privacy</Link>
           <a href="https://ns.com" target="_blank" rel="noreferrer">Network School ↗</a>
         </div>
       </div>
@@ -180,6 +184,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Nav />
         <main>{children}</main>
         <Footer />
+      <TrackClicks />
       </body>
     </html>
   );

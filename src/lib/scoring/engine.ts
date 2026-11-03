@@ -123,11 +123,19 @@ function technicalPillar(s: TalentSignals): PillarScore {
   return pillar("technical", score, confidence, factors);
 }
 
+/** About 14 commits a day, every day. Above this is not one human working. */
+export const HUMAN_COMMITS_PER_YEAR = 5000;
+
 /** Growth trajectory, is output accelerating, and is it sustained? */
 function trajectoryPillar(s: TalentSignals): PillarScore {
   const o = s.output;
 
-  const velocity = growthScore(o.commitsLast12mo, o.commitsPrev12mo);
+  // Counts above a human ceiling are mirrors, vendored history, or bots, not a
+  // person accelerating. Backtest found 41,979 and 49,015 "commits in a year".
+  const velocity = growthScore(
+    Math.min(o.commitsLast12mo, HUMAN_COMMITS_PER_YEAR),
+    Math.min(o.commitsPrev12mo, HUMAN_COMMITS_PER_YEAR),
+  );
   const breadth = logScale(s.craft.languages.length, 8);
   const consistency = logScale(
     o.contributionsLastYear / Math.max(1, s.account.accountAgeYears),

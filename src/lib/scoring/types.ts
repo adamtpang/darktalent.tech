@@ -3,7 +3,7 @@
  *
  * Pipeline:
  *   raw platform data ─▶ TalentSignals (normalized, source-agnostic)
- *                     ─▶ DarkTalentScore (explainable, 0–100)
+ *                     ─▶ DarkTalentScore (explainable, 0 to 100)
  *
  * The scorer is a PURE function of TalentSignals, no I/O, no DB, no network.
  * That keeps it deterministic, unit-testable, and auditable. Auditability is

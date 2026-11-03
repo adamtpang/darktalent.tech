@@ -20,8 +20,9 @@ export default function RankingsPage() {
           The Forbes list, ranked by <span className="gold-text">Elo</span>.
         </h1>
         <p className="lead" style={{ marginTop: 14, maxWidth: 640 }}>
-          Every builder gets a rating. Net worth is the market cap; Elo is the
-          game, and it moves every time someone votes.{" "}
+          A game, not a ledger. Net worth is the market cap; Elo is seeded from
+          it and an editorial rating, with simulated movement. Votes count on
+          your device only for now.{" "}
           <Link href="/versus" style={{ color: "var(--signal)" }}>
             Cast a vote →
           </Link>
