@@ -162,3 +162,12 @@ since the link and product are both off). Minted and labeled the real offer:
 **Not fleet-ready.** Blocked on: deploying the price fix to production
 (Adam), toggling Analytics (Adam), and actually sending outreach (Adam,
 never this agent).
+
+## 2026-10-31: Next.js critical RCE patch (branch security/next-rce-2026-10-31)
+
+- next 15.5.19 -> 15.5.28 on patching GHSA-673q-mjm6-r5xr and GHSA-2464-fhr4-w9xw. Mode: next+audit fix, never --force.
+- Build: `npm run build` passed.
+- beware.dog code-audit --no-deps, code findings: 2 (0 crit/high) -> 2 (0 crit/high).
+- beware.dog OSV dependency findings: 63 (39 crit/high, 14 next) -> 19 (11 crit/high, 0 next).
+- npm audit (critical/high/total): 6c/11h/34t -> 2c/6h/24t.
+- Not pushed or deployed; merging and deploying is Adam's call.
